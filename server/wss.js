@@ -10,8 +10,8 @@ module.exports = {
         var id = Math.random().toString(36).substr(2);
         user.connectUser(id);
 
-        socket.send('哈喽, ID：' + id);
         wss.broadcast(id + '来了！');
+        socket.send('哈喽, ID：' + id);
 
         socket.on('message', function(message) {
             console.log('收到客户端消息：', message);
@@ -24,6 +24,7 @@ module.exports = {
         socket.on('close', function (code, reason) {
             console.log(id, '离开了');
             user.disConnectUser(id);
+            wss.broadcast(id + '悄悄地走了！');
         });
 
         //消息类型处理器
