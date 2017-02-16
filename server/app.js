@@ -37,6 +37,15 @@ var wss = new WebSocket.Server( {
     }
 } );
 
+//定义消息广播
+wss.broadcast = function broadcast(data) {
+    wss.clients.forEach(function each(client) {
+        if (client.readyState === WebSocket.OPEN) {
+            client.send(data);
+        }
+    });
+};
+
 wss.on('connection', function connection(socket) {
     wsHandler.init(WebSocket, wss, socket);
 });

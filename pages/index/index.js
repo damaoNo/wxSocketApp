@@ -115,7 +115,7 @@ Page({
         try {
             msg = JSON.parse(msg);
             if(msg.type == 'getUser'){
-
+                console.log('[users]', msg.data);
             }
         }catch (e){
             message.push(msg);
