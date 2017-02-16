@@ -61,6 +61,9 @@ Page({
                 isOpen: true,
                 statusMsg: '已连接'
             });
+            setTimeout(function () {
+                $this.sendMessage('Hi, 你好吗？');
+            }, 1000);
             if(isAutoConnect){
                 console.log('10秒后将自动断开！');
                 setTimeout(function () {
@@ -102,6 +105,14 @@ Page({
     },
     disconnectWss: function () {
         wx.closeSocket();
+    },
+    sendMessage: function (data, msg) {
+        if(this.data.isOpen){
+            console.log('尝试向服务器发送消息：', data);
+            wx.sendSocketMessage({
+                data: data
+            });
+        }
     }
 });
 

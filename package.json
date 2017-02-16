@@ -2,7 +2,7 @@
   "name": "y",
   "version": "1.0.0",
   "description": "weixin app of websocket",
-  "main": "wss.js",
+  "main": "server/app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
