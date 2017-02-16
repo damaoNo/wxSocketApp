@@ -1,0 +1,11 @@
+{
+  "pages": [
+    "pages/index/index"
+  ],
+  "window": {
+    "navigationBarBackgroundColor": "#262834",
+    "navigationBarTitleText": "wxSocketApp",
+    "navigationBarTextStyle": "white",
+    "backgroundColor": "#1C1F27"
+  }
+}
