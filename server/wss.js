@@ -10,7 +10,7 @@ module.exports = {
         var id = Math.random().toString(36).substr(2);
         user.connectUser(id);
 
-        socket.send(new Date().toLocaleString() + '：哈喽, ' + id);
+        socket.send('哈喽, ID：' + id);
 
         socket.on('message', function(message) {
             console.log('收到客户端消息：', message);

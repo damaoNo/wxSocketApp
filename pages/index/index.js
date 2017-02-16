@@ -91,10 +91,6 @@ Page({
         });
         wx.onSocketMessage(function(res) {
             console.log('收到服务器内容：', res);
-            message.push(res.data);
-            $this.setData({
-                message: message
-            });
             $this.msgHandler(res.data);
         });
     },
@@ -116,9 +112,16 @@ Page({
         }
     },
     msgHandler: function (msg) {
-        msg = JSON.parse(msg);
-        if(msg.type == 'getUser'){
-            
+        try {
+            msg = JSON.parse(msg);
+            if(msg.type == 'getUser'){
+
+            }
+        }catch (e){
+            message.push(msg);
+            this.setData({
+                message: message
+            });
         }
     }
 });
