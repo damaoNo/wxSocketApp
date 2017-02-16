@@ -11,6 +11,7 @@ module.exports = {
 
         socket.on('message', function(message) {
             console.log('收到客户端消息：', message);
+            message = JSON.parse(message);
             var msgType = message.type;
             var data = message.data;
             msgHandler(msgType, data);
