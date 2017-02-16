@@ -1,12 +1,21 @@
 <view class="container">
+    <view  bindtap="bindViewTap" class="userinfo">
+        <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
+        <text class="userinfo-nickname">昵称：{{userInfo.nickName}}</text>
+        <text class="sysInfo">手机型号：{{sysInfo.model}}   网络类型：{{networkType}}</text>
+        <view wx:if="{{networkType == '2g' || networkType == '3g'}}" class="bad-net-work"> 您使用的网络不稳定，可能会影响游戏体验！ </view>
+        <view wx:if="{{networkType == '4g' || networkType == 'wifi'}}" class="good-net-work"> 您使用的网络顺畅，尽情游戏吧！ </view>
+    </view>
     <view class="status">
         <text>当前连接状态：</text>
         <text class="status-icon status-open" wx:if="{{isOpen}}"></text>
         <text class="status-icon" wx:else></text>
-        <text> {{isOpen ? '已连接' : '已断开'}}</text>
+        <text>{{statusMsg}}</text>
+        <button class="connectBtn" type="primary" size="mini" disabled="{{isOpen}}" bindtap="connectWss">连接</button>
+        <button class="connectBtn" type="warn" size="mini" disabled="{{!isOpen}}" bindtap="disconnectWss">断开</button>
     </view>
     <view class="message">
-        <text>收到消息：</text>
-        <text>{{message}}</text>
+        <text>大厅消息：</text>
+        <text wx:for="{{message}}" wx:key="m">{{item}}</text>
     </view>
 </view>

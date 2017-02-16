@@ -2,6 +2,36 @@
     padding: 30rpx;
     font-size: 28rpx;
 }
+.userinfo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20rpx;
+}
+
+.userinfo-avatar {
+    width: 128rpx;
+    height: 128rpx;
+    margin: 20rpx;
+    border-radius: 50%;
+}
+
+.userinfo-nickname {
+    color: #00aa16;
+}
+.sysInfo{
+    margin-top: 20rpx;
+    font-size: 0.8rem;
+    color: #00c816;
+}
+.bad-net-work,
+.good-net-work{
+    font-size: 0.8rem;
+    color: #00c816;
+}
+.bad-net-work{
+    color: #c03b32;
+}
 .status text{
     vertical-align: middle;
 }
@@ -20,4 +50,8 @@
 }
 .message text{
     display: block;
+}
+.connectBtn{
+    vertical-align: middle;
+    margin-left: 10rpx;
 }

@@ -5,7 +5,6 @@
   "window": {
     "navigationBarBackgroundColor": "#262834",
     "navigationBarTitleText": "wxSocketApp",
-    "navigationBarTextStyle": "white",
-    "backgroundColor": "#1C1F27"
+    "navigationBarTextStyle": "white"
   }
 }
