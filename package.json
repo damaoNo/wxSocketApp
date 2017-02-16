@@ -1,0 +1,26 @@
+{
+  "name": "y",
+  "version": "1.0.0",
+  "description": "weixin app of websocket",
+  "main": "wss.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Shaman05/wxSocketApp.git"
+  },
+  "keywords": [
+    "weixin",
+    "websocket"
+  ],
+  "author": "shaman",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Shaman05/wxSocketApp/issues"
+  },
+  "homepage": "https://github.com/Shaman05/wxSocketApp#readme",
+  "dependencies": {
+    "ws": "^2.0.3"
+  }
+}
