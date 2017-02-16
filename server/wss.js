@@ -7,7 +7,10 @@ var user = require('./user');
 
 module.exports = {
     init: function(WebSocket, wss, socket) {
-        socket.send(new Date().toLocaleString() + '：哈喽,来自地球的小伙伴 :)');
+        var id = Math.random().toString(36).substr(2);
+        user.connectUser(id);
+
+        socket.send(new Date().toLocaleString() + '：哈喽, ' + id);
 
         socket.on('message', function(message) {
             console.log('收到客户端消息：', message);
@@ -17,11 +20,17 @@ module.exports = {
             msgHandler(msgType, data);
         });
 
+        socket.on('close', function (code, reason) {
+            console.log(id, '离开了');
+            user.disConnectUser(id);
+        });
+
+        //消息类型处理器
         var msgHandlers = {
-            getUser: function (data) {
+            getUser: function () {
                 sendData(user.getUsers());
             },
-            otherWise: function (data) {
+            otherWise: function () {
                 sendData('', true);
             }
         };
