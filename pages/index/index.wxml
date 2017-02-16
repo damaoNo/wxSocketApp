@@ -1,3 +1,12 @@
 <view class="container">
-
+    <view class="status">
+        <text>当前连接状态：</text>
+        <text class="status-icon status-open" wx:if="{{isOpen}}"></text>
+        <text class="status-icon" wx:else></text>
+        <text> {{isOpen ? '已连接' : '已断开'}}</text>
+    </view>
+    <view class="message">
+        <text>收到消息：</text>
+        <text>{{message}}</text>
+    </view>
 </view>
