@@ -5,7 +5,7 @@
 var https = require('https');
 var fs = require('fs');
 var ws = require('ws');
-var port = 80;
+var port = 443;
 
 var options = {
       key: fs.readFileSync('./private.pem')
@@ -16,7 +16,7 @@ var options = {
 var server = https.createServer(options, function (req, res) {
     //res.writeHead(403);
     res.end('This is a  WebSockets server!\n');
-}).listen(80, function () {
+}).listen(port, function () {
     console.log('Https server started at port: ' + port);
 });
 
