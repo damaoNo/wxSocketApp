@@ -10,7 +10,7 @@ module.exports = {
         socket.send(new Date().toLocaleString() + '：哈喽,来自地球的小伙伴 :)');
 
         socket.on('message', function(message) {
-            console.log('收到客户端消息：', JSON.stringify(message));
+            console.log('收到客户端消息：', message);
             var msgType = message.type;
             var data = message.data;
             msgHandler(msgType, data);
@@ -18,10 +18,10 @@ module.exports = {
 
         var msgHandlers = {
             getUser: function (data) {
-                socket.send({data: user.getUsers(), status: 1, message: 'OK'});
+                sendData(user.getUsers());
             },
             otherWise: function (data) {
-                socket.send({data: '', status: 0, message: 'Error message type!'});
+                sendData('', true);
             }
         };
 
@@ -30,6 +30,22 @@ module.exports = {
                 msgHandlers[type](data);
             }else{
                 msgHandlers.otherWise(data);
+            }
+        }
+
+        function sendData(data, isErrorMsgType) {
+            if(isErrorMsgType){
+                socket.send(JSON.stringify({
+                    status: 0,
+                    data: '',
+                    message: 'Error message type!'
+                }));
+            }else{
+                socket.send(JSON.stringify({
+                    status: 1,
+                    data: data,
+                    message: 'OK'
+                }));
             }
         }
     }

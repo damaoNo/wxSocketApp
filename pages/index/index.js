@@ -110,7 +110,7 @@ Page({
         if(this.data.isOpen){
             console.log('尝试向服务器发送消息：', data);
             wx.sendSocketMessage({
-                data: data
+                data: JSON.stringify(data)
             });
         }
     }
