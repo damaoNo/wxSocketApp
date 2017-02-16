@@ -21,7 +21,12 @@ var server = https.createServer(options, function (req, res) {
 });
 
 
-var wss = new ws.Server( { server: server } );
+var wss = new ws.Server( {
+    server: server,
+    verifyClientL: function (info) {
+        console.log('收到来自 ' + info.origin + ' 的连接...');
+    }
+} );
 wss.on( 'connection', function ( wsConnect ) {
     console.log('some one connected!');
 

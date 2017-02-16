@@ -15,3 +15,9 @@
 .status-open{
     background: green;
 }
+.message{
+    margin-top: 10rpx;
+}
+.message text{
+    display: block;
+}

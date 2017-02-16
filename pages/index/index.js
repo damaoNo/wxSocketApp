@@ -2,7 +2,6 @@
  * Created by ChenChao on 2016/9/27.
  */
 
-var wss = null;
 var wssTimer = null;
 
     Page({
@@ -43,13 +42,15 @@ var wssTimer = null;
         });
         wx.onSocketMessage(function(res) {
             console.log('收到服务器内容：', res);
+            $this.setData({
+                message: res.data
+            });
         });
 
         function connect() {
-            wss = wx.connectSocket({
+            wx.connectSocket({
                 url: 'wss://www.playgame365.xyz'
             });
-            console.log(wss);
         }
     }
 });
