@@ -62,7 +62,7 @@ Page({
                 statusMsg: '已连接'
             });
             setTimeout(function () {
-                $this.sendMessage({type: 'getUser1', data: 'Hi, 你好吗？'});
+                $this.sendMessage({type: 'getUser', data: 'Hi, 你好吗？'});
             }, 1000);
             if(isAutoConnect){
                 console.log('10秒后将自动断开！');
@@ -95,6 +95,7 @@ Page({
             $this.setData({
                 message: message
             });
+            $this.msgHandler(res.data);
         });
     },
     connectWss: function () {
@@ -112,6 +113,12 @@ Page({
             wx.sendSocketMessage({
                 data: JSON.stringify(data)
             });
+        }
+    },
+    msgHandler: function (msg) {
+        msg = JSON.parse(msg);
+        if(msg.type == 'getUser'){
+            
         }
     }
 });

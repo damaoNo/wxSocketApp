@@ -27,31 +27,33 @@ module.exports = {
 
         //消息类型处理器
         var msgHandlers = {
-            getUser: function () {
-                sendData(user.getUsers());
+            getUser: function (type) {
+                sendData(type, user.getUsers());
             },
-            otherWise: function () {
-                sendData('', true);
+            otherWise: function (type) {
+                sendData(type, '', true);
             }
         };
 
         function msgHandler(type, data) {
             if(msgHandlers[type]){
-                msgHandlers[type](data);
+                msgHandlers[type](type);
             }else{
-                msgHandlers.otherWise(data);
+                msgHandlers.otherWise(type);
             }
         }
 
-        function sendData(data, isErrorMsgType) {
+        function sendData(type, data, isErrorMsgType) {
             if(isErrorMsgType){
                 socket.send(JSON.stringify({
+                    type: type,
                     status: 0,
                     data: '',
                     message: 'Error message type!'
                 }));
             }else{
                 socket.send(JSON.stringify({
+                    type: type,
                     status: 1,
                     data: data,
                     message: 'OK'
