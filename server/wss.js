@@ -6,7 +6,8 @@ var https = require('https');
 var fs = require('fs');
 var ws = require('ws');
 var express = require('express');
-var port = 443;
+var config = require('./config');
+var port = config.httpsPort;
 
 var app = express();
 

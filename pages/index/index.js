@@ -2,6 +2,7 @@
  * Created by ChenChao on 2016/9/27.
  */
 
+var config = require('../../server/config');
 var app = getApp();
 var wssTimer = null;
 var isAutoConnect = false;
@@ -106,6 +107,6 @@ Page({
 
 function connect() {
     wx.connectSocket({
-        url: 'wss://www.playgame365.xyz'
+        url: config.wssUrl
     });
 }
