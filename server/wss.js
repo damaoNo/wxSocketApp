@@ -7,7 +7,7 @@ var fs = require('fs');
 var ws = require('ws');
 
 var options = {
-      key: fs.readFileSync('./private.key')
+      key: fs.readFileSync('./private.pem')
     , cert: fs.readFileSync('./file.crt')
     //, passphrase: '1234'
 };
