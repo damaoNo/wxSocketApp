@@ -7,13 +7,13 @@ var fs = require('fs');
 var ws = require('ws');
 
 var options = {
-      key: fs.readFileSync('./keys/xxx.key')
-    , cert: fs.readFileSync('./keys/xxx.crt')
-    , passphrase: '1234'
+      key: fs.readFileSync('./private.key')
+    , cert: fs.readFileSync('./file.crt')
+    //, passphrase: '1234'
 };
 
-var server = https.createServer(options, function (req, res) {//要是单纯的https连接的话就会返回这个东西
-    res.writeHead(403);
+var server = https.createServer(options, function (req, res) {
+    //res.writeHead(403);
     res.end("This is a  WebSockets server!\n");
 }).listen(25550);
 
