@@ -35,7 +35,6 @@ var wss = new ws.Server( {
 } );
 
 wss.on('connection', function connection(wsConnect) {
-    console.log(1111111);
     wsConnect.send(new Date().toLocaleString() + '：哈喽,来自地球的小伙伴 :)');
     wsConnect.on( 'message', function ( message ) {
         console.log('收到客户端消息：', message);
