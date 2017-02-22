@@ -21,7 +21,7 @@ app.post('/push-wxSocketApp', function (req, res) {
     exec('sh ./restart.sh', function(err, stdOut, stdErr){
         res.setHeader('content-type', 'text/plain');
         var msg = 'Restart OK!';
-        if(!err) {
+        if(err) {
             msg = 'Restart error: ' + stdErr;
         }
         res.send({msg: msg, timeStamp: new Date()});
