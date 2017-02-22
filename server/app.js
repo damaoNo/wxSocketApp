@@ -21,8 +21,8 @@ app.use(function (req, res) {
 });
 
 var options = {
-    key: fs.readFileSync('./keys/214020546160250.key')
-    , cert: fs.readFileSync('./keys/214020546160250.pem')
+    key: fs.readFileSync(config.key)
+    , cert: fs.readFileSync(config.cert)
     //, passphrase: '1234'
 };
 var server = https.createServer(options, app).listen(port, function listening() {
