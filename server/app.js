@@ -45,7 +45,7 @@ var wss = new WebSocket.Server( {
     server: server,
     verifyClient: function (info) {
         //console.log('收到来自 ' + info.origin + ' 的连接...');
-        //todo 添加验证规则
+        //todo 添加验证规则 1232132
         return true;
     }
 } );
