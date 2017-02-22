@@ -4,6 +4,7 @@
 
 var https = require('https');
 var fs = require('fs');
+var exec = require('child_process').exec;
 var WebSocket = require('ws');
 var express = require('express');
 var config = require('./config');
@@ -17,9 +18,14 @@ app.get('/.well-known/pki-validation/fileauth.htm', function (req, res) {
 });
 
 app.post('/push-wxSocketApp', function (req, res) {
-    console.log(req.body);
-    res.setHeader('content-type', 'text/plain');
-    res.send({msg: "wxSocketApp restart OK!", data: req.body , timeStamp: new Date()});
+    exec('sh ./restart.sh', function(err, stdOut, stdErr){
+        res.setHeader('content-type', 'text/plain');
+        var msg = 'Restart OK!';
+        if(!err) {
+            msg = 'Restart error: ' + stdErr;
+        }
+        res.send({msg: msg, timeStamp: new Date()});
+    });
 });
 
 app.use(function (req, res) {
