@@ -10,7 +10,7 @@ module.exports = {
         var id = Math.random().toString(36).substr(2);
         user.connectUser(id);
 
-        wss.broadcast(id + '来了！');
+        wss.broadcast(id + '大摇大摆地来了！');
         socket.send('哈喽, ID：' + id);
 
         socket.on('message', function(message) {
