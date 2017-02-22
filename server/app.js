@@ -19,7 +19,7 @@ app.get('/.well-known/pki-validation/fileauth.htm', function (req, res) {
 app.post('/push-wxSocketApp', function (req, res) {
     console.log(req.body);
     res.setHeader('content-type', 'text/plain');
-    res.send({msg: "wxSocketApp restart OK!", data: req.body});
+    res.send({msg: "wxSocketApp restart OK!", data: req.body , timeStamp: new Date()});
 });
 
 app.use(function (req, res) {
