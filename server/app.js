@@ -26,7 +26,7 @@ app.post('/push-wxSocketApp', function (req, res) {
             msg = 'Restart error: ' + stdErr;
         }
         console.log(msg);
-        res.send({msg: msg, timeStamp: new Date()});
+        res.send({msg: msg, timeStamp: new Date(), code: 200});
     });
 });
 
