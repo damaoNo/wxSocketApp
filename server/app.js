@@ -23,7 +23,7 @@ app.post('/push-wxSocketApp', function (req, res) {
 });
 
 app.use(function (req, res) {
-    res.send({ msg: "这是 shaman 的 socket 服务器！" });
+    res.send({ msg: "这是 shaman 的 socket 服务器！" , timeStamp: new Date()});
 });
 
 var options = {
