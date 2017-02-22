@@ -43,7 +43,7 @@ var server = https.createServer(options, app).listen(port, function listening() 
 var wss = new WebSocket.Server( {
     server: server,
     verifyClient: function (info) {
-        console.log('收到来自 ' + info.origin + ' 的连接...');
+        //console.log('收到来自 ' + info.origin + ' 的连接...');
         //todo 添加验证规则
         return true;
     }
