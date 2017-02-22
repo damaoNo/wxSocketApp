@@ -16,6 +16,12 @@ app.get('/.well-known/pki-validation/fileauth.htm', function (req, res) {
     res.send(fs.readFileSync('./fileauth.htm'));
 });
 
+app.post('/push-wxSocketApp', function (req, res) {
+    console.log(req.body);
+    res.setHeader('content-type', 'text/plain');
+    res.send({msg: "wxSocketApp restart OK!"});
+});
+
 app.use(function (req, res) {
     res.send({ msg: "这是 shaman 的 socket 服务器！" });
 });
