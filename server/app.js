@@ -75,6 +75,7 @@ app.post('/order', function (req, res) {
                                 "Content-Length": data.length
                             }
                         };
+                        console.log(opt);
                         var httpsReq = https.request(opt, function (serverFeedback) {
                             if (serverFeedback.statusCode == 200) {
                                 var body = "";
