@@ -50,22 +50,18 @@ app.post('/order', function (req, res) {
                             "touser": openid,
                             "template_id": "KMIzdFkIWdoMCKOTaPxQVmhQxTW5wmFznwqn2PyHIk0",
                             "form_id": formId,
-                            "data": {
+                            "value": {
                                 "keyword1": {
-                                    "value": "339208499",
-                                    "color": "#173177"
+                                    "value": "201702123145645"
                                 },
                                 "keyword2": {
-                                    "value": "2015年01月05日 12:30",
-                                    "color": "#173177"
+                                    "value": new Date.toLocaleString()
                                 },
                                 "keyword3": {
-                                    "value": "test item",
-                                    "color": "#173177"
-                                } ,
+                                    "value": "来自己星星的大西瓜"
+                                },
                                 "keyword4": {
-                                    "value": 90,
-                                    "color": "#173177"
+                                    "value": "￥99999.00"
                                 }
                             }
                         };
