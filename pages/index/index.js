@@ -123,6 +123,30 @@ Page({
                 message: message
             });
         }
+    },
+    formSubmit: function(e) {
+        console.log('form发生了submit事件，携带数据为：', e);
+        var formId = e.detail.formId;
+        app.getUserInfo(function (userInfo, res) {
+            console.log(res);
+            if (res.code) {
+                wx.request({
+                    url: 'https://www.nodejser.site/order',
+                    method: 'POST',
+                    data: {
+                        formId: formId
+                    },
+                    header: {
+                        'content-type': 'application/json'
+                    },
+                    success: function(res) {
+                        console.log(res.data);
+                    }
+                })
+            } else {
+                console.log('获取用户登录态失败！' + res.errMsg)
+            }
+        });
     }
 });
 

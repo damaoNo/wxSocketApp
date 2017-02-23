@@ -14,6 +14,13 @@
         <button class="connectBtn" type="primary" size="mini" disabled="{{isOpen}}" bindtap="connectWss">连接</button>
         <button class="connectBtn" type="warn" size="mini" disabled="{{!isOpen}}" bindtap="disconnectWss">断开</button>
     </view>
+    <view>
+        <form bindsubmit="formSubmit" report-submit="true">
+            <view class="btn-area">
+                <button formType="submit">点击测试接受模板消息</button>
+            </view>
+        </form>
+    </view>
     <view class="message">
         <text>大厅消息：</text>
         <text wx:for="{{message}}" wx:key="m">{{item}}</text>
