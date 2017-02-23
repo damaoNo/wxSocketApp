@@ -52,16 +52,20 @@ app.post('/order', function (req, res) {
                             "form_id": formId,
                             "data": {
                                 "keyword1": {
-                                    "value": "201702123145645"
+                                    "value": "339208499",
+                                    "color": "#173177"
                                 },
                                 "keyword2": {
-                                    "value": new Date.toLocaleString()
+                                    "value": "2015年01月05日 12:30",
+                                    "color": "#173177"
                                 },
                                 "keyword3": {
-                                    "value": "来自己星星的大西瓜"
-                                },
+                                    "value": "test item",
+                                    "color": "#173177"
+                                } ,
                                 "keyword4": {
-                                    "value": "99999.00"
+                                    "value": 90,
+                                    "color": "#173177"
                                 }
                             }
                         };
