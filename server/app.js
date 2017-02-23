@@ -50,18 +50,18 @@ app.post('/order', function (req, res) {
                             "touser": openid,
                             "template_id": "KMIzdFkIWdoMCKOTaPxQVmhQxTW5wmFznwqn2PyHIk0",
                             "form_id": formId,
-                            "value": {
+                            "data": {
                                 "keyword1": {
                                     "value": "201702123145645"
                                 },
                                 "keyword2": {
-                                    "value": new Date.toLocaleString()
+                                    "value": "2017-02-23 17:33"
                                 },
                                 "keyword3": {
                                     "value": "来自己星星的大西瓜"
                                 },
                                 "keyword4": {
-                                    "value": "￥99999.00"
+                                    "value": "$99999.00"
                                 }
                             }
                         };
