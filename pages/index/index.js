@@ -134,6 +134,7 @@ Page({
                     url: 'https://www.nodejser.site/order',
                     method: 'POST',
                     data: {
+                        js_code: res.code,
                         formId: formId
                     },
                     header: {

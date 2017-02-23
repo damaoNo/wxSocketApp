@@ -24,12 +24,15 @@ app.get('/.well-known/pki-validation/fileauth.htm', function (req, res) {
 });
 
 app.post('/order', function (req, res) {
-    var jsCode = req.query.js_code;
+    var jsCode = req.body.js_code;
     var grantType = 'authorization_code';
+    console.log('jsCode: ', jsCode);
     createNewSession(appId, secret, jsCode, grantType, res, function (result) {
         var openid = result.openid;
+        console.log('openid: ', openid);
         var formId = req.body.formId;
         var grantType = 'client_credential';
+        console.log('formId: ', formId);
         var url = `https://api.weixin.qq.com/cgi-bin/token?appid=${appId}&secret=${secret}&grant_type=${grantType}`;
         https.get(url, function (_res) {
             var body = '';
