@@ -60,7 +60,7 @@ app.post('/order', function (req, res) {
                         data = JSON.stringify(data);
                         var opt = {
                             method: 'POST',
-                            host: 'https://api.weixin.qq.com',
+                            host: 'api.weixin.qq.com',
                             path: `/cgi-bin/message/wxopen/template/send?access_token=${result.access_token}`,
                             headers: {
                                 "Content-Type": 'application/json',
