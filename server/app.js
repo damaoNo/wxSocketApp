@@ -52,16 +52,16 @@ app.post('/order', function (req, res) {
                             "form_id": formId,
                             "data": {
                                 "keyword1": {
-                                    "DATA": "201702123145645"
+                                    "value": "201702123145645"
                                 },
                                 "keyword2": {
-                                    "DATA": new Date.toLocaleString()
+                                    "value": new Date.toLocaleString()
                                 },
                                 "keyword3": {
-                                    "DATA": "来自己星星的大西瓜"
+                                    "value": "来自己星星的大西瓜"
                                 },
                                 "keyword4": {
-                                    "DATA": "99999.00"
+                                    "value": "99999.00"
                                 }
                             }
                         };

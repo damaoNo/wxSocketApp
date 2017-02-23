@@ -14,13 +14,13 @@ App({
     },
     getUserInfo: function (cb) {
         var that = this;
-        if (this.globalData.userInfo && this.globalData.res) {
-            typeof cb == "function" && cb(this.globalData.userInfo, this.globalData.res);
-        } else {
-            //调用登录接口
-            wx.login({
-                success: function (res) {
-                    that.globalData.res = res;
+
+        //调用登录接口
+        wx.login({
+            success: function (res) {
+                if (that.globalData.userInfo) {
+                    typeof cb == "function" && cb(that.globalData.userInfo, res);
+                } else {
                     wx.getUserInfo({
                         success: function (_res) {
                             that.globalData.userInfo = _res.userInfo;
@@ -28,8 +28,8 @@ App({
                         }
                     })
                 }
-            });
-        }
+            }
+        });
     },
     globalData: {
         userInfo: null
