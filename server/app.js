@@ -51,9 +51,17 @@ app.post('/order', function (req, res) {
                             "template_id": "KMIzdFkIWdoMCKOTaPxQVmhQxTW5wmFznwqn2PyHIk0",
                             "form_id": formId,
                             "data": {
+                                "keyword1": {
+                                    "DATA": "201702123145645"
+                                },
+                                "keyword2": {
+                                    "DATA": new Date.toLocaleString()
+                                },
                                 "keyword3": {
-                                    "value": "粤海喜来登酒店",
-                                    "color": "#173177"
+                                    "DATA": "来自己星星的大西瓜"
+                                },
+                                "keyword4": {
+                                    "DATA": "99999.00"
                                 }
                             }
                         };
