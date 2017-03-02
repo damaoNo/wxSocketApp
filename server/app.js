@@ -47,7 +47,8 @@ app.post('/order', function (req, res) {
                             "touser": openid,
                             "template_id": "KMIzdFkIWdoMCKOTaPxQVmhQxTW5wmFznwqn2PyHIk0",
                             "form_id": formId,
-                            "data": {
+                            //去掉 data 部分就能正常发送并收到
+                            "value": JSON.stringify({
                                 "keyword1": {
                                     "value": "201702123145645"
                                 },
@@ -60,7 +61,7 @@ app.post('/order', function (req, res) {
                                 "keyword4": {
                                     "value": "$99999.00"
                                 }
-                            }
+                            })
                         };
                         data = JSON.stringify(data);
                         var opt = {
@@ -72,7 +73,6 @@ app.post('/order', function (req, res) {
                                 "Content-Length": data.length
                             }
                         };
-                        console.log(opt);
                         var httpsReq = https.request(opt, function (serverFeedback) {
                             if (serverFeedback.statusCode == 200) {
                                 var body = "";
