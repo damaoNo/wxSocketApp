@@ -42,10 +42,7 @@ app.post('/order', function (req, res) {
             _res.on('end', function () {
                 try {
                     var result = JSON.parse(body);
-                    // {"access_token": "ACCESS_TOKEN", "expires_in": 7200}
-                    // {"errcode": 40013, "errmsg": "invalid appid"}
                     if (result.access_token) {
-                        // https://api.weixin.qq.com/cgi-bin/message/wxopen/template/send?access_token=ACCESS_TOKEN
                         var data = {
                             "touser": openid,
                             "template_id": "KMIzdFkIWdoMCKOTaPxQVmhQxTW5wmFznwqn2PyHIk0",
