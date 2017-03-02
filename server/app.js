@@ -48,7 +48,10 @@ app.post('/order', function (req, res) {
                             "template_id": "KMIzdFkIWdoMCKOTaPxQVmhQxTW5wmFznwqn2PyHIk0",
                             "form_id": formId,
                             //去掉 data 部分就能正常发送并收到
-                            "value": JSON.stringify({
+                            "data": {
+                                "first": {
+                                    "value": "您好"
+                                },
                                 "keyword1": {
                                     "value": "201702123145645"
                                 },
@@ -59,9 +62,12 @@ app.post('/order', function (req, res) {
                                     "value": "来自己星星的大西瓜"
                                 },
                                 "keyword4": {
-                                    "value": "$99999.00"
+                                    "value": "900"
+                                },
+                                "remark": {
+                                    "value": "非常感谢"
                                 }
-                            })
+                            }
                         };
                         data = JSON.stringify(data);
                         var opt = {
