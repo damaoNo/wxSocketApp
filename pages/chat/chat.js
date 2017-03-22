@@ -110,7 +110,7 @@ Page({
                 });
                 var name = 'voice_' + +new Date();
                 wx.uploadFile({
-                    url: 'https://www.nodejser.site/saveRecord',
+                    url: 'https://www.nodejser.site/saveRecord?name=' + name,
                     filePath: tempFilePath,
                     name: name,
                     formData:{

@@ -31,7 +31,7 @@ app.post('/push-wxSocketApp', function (req, res) {
 });
 
 app.post('/saveRecord', function (req, res, next) {
-    var data = req.body;
+    var data = req.query;
     console.log(data);
     //生成multiparty对象，并配置上传目标路径
     var form = new multiparty.Form({uploadDir: './public/files/'});
