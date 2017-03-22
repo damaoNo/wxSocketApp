@@ -108,12 +108,13 @@ Page({
                         console.log('voice play complete!');
                     }
                 });
+                var name = 'voice_' + +new Date();
                 wx.uploadFile({
                     url: 'https://www.nodejser.site/saveRecord',
                     filePath: tempFilePath,
-                    name: 'voice_' + +new Date(),
+                    name: name,
                     formData:{
-                        'action': 'test'
+                        'name': name
                     },
                     success: function(res){
                         var data = res.data;

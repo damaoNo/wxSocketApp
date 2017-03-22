@@ -31,6 +31,8 @@ app.post('/push-wxSocketApp', function (req, res) {
 });
 
 app.post('/saveRecord', function (req, res, next) {
+    var data = req.body;
+    console.log(data);
     //生成multiparty对象，并配置上传目标路径
     var form = new multiparty.Form({uploadDir: './public/files/'});
     //上传完成后处理
@@ -40,9 +42,9 @@ app.post('/saveRecord', function (req, res, next) {
             console.log('parse error: ' + err);
         } else {
             console.log('parse files: ' + filesTmp);
-            var inputFile = files.inputFile[0];
+            var inputFile = files[data.name][0];
             var uploadedPath = inputFile.path;
-            var dstPath = './public/files/' + inputFile.originalFilename;
+            var dstPath = './public/files/' + data.name + '.silk';
             //重命名为真实文件名
             fs.rename(uploadedPath, dstPath, function(err) {
                 if(err){
