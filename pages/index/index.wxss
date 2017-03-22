@@ -55,3 +55,11 @@
     vertical-align: middle;
     margin-left: 10rpx;
 }
+.enterBtn{
+    display: block;
+    height: 80rpx;
+    text-align: center;
+    background: green;
+    color: white;
+    line-height: 80rpx;
+}

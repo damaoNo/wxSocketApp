@@ -1,0 +1,27 @@
+.container{
+    padding: 30rpx;
+    font-size: 28rpx;
+}
+.status text{
+    vertical-align: middle;
+}
+.status-icon{
+    display: inline-block;
+    height: 28rpx;
+    width: 28rpx;
+    background: red;
+    border-radius: 14rpx;
+}
+.status-open{
+    background: green;
+}
+.message{
+    margin-top: 10rpx;
+}
+.message text{
+    display: block;
+}
+.connectBtn{
+    vertical-align: middle;
+    margin-left: 10rpx;
+}

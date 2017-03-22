@@ -11,7 +11,7 @@ module.exports = {
         user.connectUser(id);
 
         wss.broadcast(id + '大摇大摆地来了！');
-        socket.send('哈喽, ID：' + id);
+        //socket.send('哈喽, ID：' + id);
 
         socket.on('message', function(message) {
             console.log('收到客户端消息：', message);

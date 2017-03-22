@@ -1,6 +1,7 @@
 {
   "pages": [
-    "pages/index/index"
+    "pages/index/index",
+    "pages/chat/chat"
   ],
   "window": {
     "navigationBarBackgroundColor": "#262834",

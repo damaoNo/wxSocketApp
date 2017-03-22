@@ -1,0 +1,14 @@
+<view class="container">
+    <view class="status">
+        <text>当前连接状态：</text>
+        <text class="status-icon status-open" wx:if="{{isOpen}}"></text>
+        <text class="status-icon" wx:else></text>
+        <text>{{statusMsg}}</text>
+        <button class="connectBtn" type="primary" size="mini" disabled="{{isOpen}}" bindtap="connectWss">连接</button>
+        <button class="connectBtn" type="warn" size="mini" disabled="{{!isOpen}}" bindtap="disconnectWss">断开</button>
+    </view>
+    <view class="message">
+        <text>大厅消息：</text>
+        <text wx:for="{{message}}" wx:key="m">{{item}}</text>
+    </view>
+</view>
