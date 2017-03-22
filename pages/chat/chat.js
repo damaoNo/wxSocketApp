@@ -3,7 +3,6 @@
  */
 
 var config = require('../../server/config');
-var app = getApp();
 var wssTimer = null;
 var isAutoConnect = false;
 var message = [];
@@ -15,32 +14,7 @@ Page({
         message: message
     },
     onLoad: function () {
-        this.userInfo();
         this.wssInit();
-    },
-    userInfo: function () {
-        var that = this;
-        //调用应用实例的方法获取全局数据
-        app.getUserInfo(function (userInfo) {
-            //更新数据
-            that.setData({
-                userInfo: userInfo
-            });
-        });
-        wx.getSystemInfo({
-            success: function(res) {
-                that.setData({
-                    sysInfo: res
-                });
-            }
-        });
-        wx.getNetworkType({
-            success: function(res) {
-                that.setData({
-                    networkType: res.networkType
-                });
-            }
-        });
     },
     wssInit: function () {
         var $this = this;
@@ -120,6 +94,38 @@ Page({
                 message: message
             });
         }
+    },
+    onSpeak: function () {
+        console.log('start record!');
+        wx.startRecord({
+            success: function(res) {
+                console.log('record over!');
+                var tempFilePath = res.tempFilePath;
+                console.log(tempFilePath);
+                wx.playVoice({
+                    filePath: tempFilePath,
+                    complete: function(){
+                        console.log('voice play complete!');
+                    }
+                });
+                wx.uploadFile({
+                    url: 'https://www.nodejser.site/saveRecord',
+                    filePath: tempFilePath,
+                    name: 'voice_' + +new Date(),
+                    formData:{
+                        'action': 'test'
+                    },
+                    success: function(res){
+                        var data = res.data;
+                        console.log(res);
+                    }
+                })
+            }
+        })
+    },
+    onSpeakEnd: function () {
+        console.log('stop record!');
+        wx.stopRecord();
     }
 });
 
