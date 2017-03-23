@@ -69,11 +69,11 @@ app.get('/getVoice', function (req, res, next) {
     var stats = fs.statSync(file);
     if(stats.isFile()){
         res.set({
-            'Content-Type': 'application/octet-stream',
+            'Content-Type': 'audio/silk',
             'Content-Disposition': 'attachment; filename=' + file,
             'Content-Length': stats.size
         });
-        fs.createReadStream(filePath).pipe(res);
+        fs.createReadStream(file).pipe(res);
     } else {
         console.log('文件不存在！');
         res.end(404);
