@@ -4,6 +4,7 @@
 
 var https = require('https');
 var fs = require('fs');
+var path = require('path');
 var multiparty = require('multiparty');
 var util = require('util');
 var exec = require('child_process').exec;
