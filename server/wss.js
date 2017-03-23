@@ -29,8 +29,11 @@ module.exports = {
 
         //消息类型处理器
         var msgHandlers = {
-            getUser: function (type) {
+            getUser: function (type, data) {
                 sendData(type, user.getUsers());
+            },
+            voice: function (type, data) {
+                sendData(type, data);
             },
             otherWise: function (type) {
                 sendData(type, '', true);
@@ -39,7 +42,7 @@ module.exports = {
 
         function msgHandler(type, data) {
             if(msgHandlers[type]){
-                msgHandlers[type](type);
+                msgHandlers[type](type, data);
             }else{
                 msgHandlers.otherWise(type);
             }
