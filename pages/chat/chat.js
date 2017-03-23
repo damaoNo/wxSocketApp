@@ -101,13 +101,6 @@ Page({
             success: function(res) {
                 console.log('record over!');
                 var tempFilePath = res.tempFilePath;
-                console.log(tempFilePath);
-                wx.playVoice({
-                    filePath: tempFilePath,
-                    complete: function(){
-                        console.log('voice play complete!');
-                    }
-                });
                 var name = 'voice_' + +new Date();
                 wx.uploadFile({
                     url: 'https://www.nodejser.site/saveRecord?name=' + name,
@@ -118,7 +111,14 @@ Page({
                     },
                     success: function(res){
                         var data = res.data;
-                        console.log(res);
+                        wx.downloadFile({
+                            url: 'https://www.nodejser.site/getVoice?name=' + name,
+                            success: function(res) {
+                                wx.playVoice({
+                                    filePath: res.tempFilePath
+                                })
+                            }
+                        })
                     }
                 })
             }

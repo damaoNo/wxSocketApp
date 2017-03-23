@@ -61,6 +61,24 @@ app.post('/saveRecord', function (req, res, next) {
     });
 });
 
+app.get('/getVoice', function (req, res, next) {
+    var key = req.query.name;
+    var file = path.join(__dirname, 'public', 'files', key + '.silk');
+    console.log('客户端请求文件：' + file);
+    var stats = fs.statSync(file);
+    if(stats.isFile()){
+        res.set({
+            'Content-Type': 'application/octet-stream',
+            'Content-Disposition': 'attachment; filename=' + file,
+            'Content-Length': stats.size
+        });
+        fs.createReadStream(filePath).pipe(res);
+    } else {
+        console.log('文件不存在！');
+        res.end(404);
+    }
+});
+
 app.use(function (req, res) {
     res.send({ msg: "这是 shaman 的 socket 服务器！" , timeStamp: new Date()});
 });
