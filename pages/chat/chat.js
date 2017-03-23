@@ -111,12 +111,14 @@ Page({
                     },
                     success: function(res){
                         var data = res.data;
+                        console.log(data);
                         wx.downloadFile({
                             url: 'https://www.nodejser.site/getVoice?name=' + name,
                             success: function(res) {
+                                console.log(res);
                                 wx.playVoice({
                                     filePath: res.tempFilePath
-                                })
+                                });
                             }
                         })
                     }
