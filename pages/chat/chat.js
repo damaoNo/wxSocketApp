@@ -83,6 +83,7 @@ Page({
         }
     },
     msgHandler: function (msg) {
+        var that = this;
         console.log(msg);
         try {
             msg = JSON.parse(msg);
@@ -90,11 +91,19 @@ Page({
                 console.log('[users]', msg.data);
             }
             if(msg.type == 'voice'){
-                console.log('[voice message]', msg.data);
+                console.log('[voice]', msg.data);
+                message.push('[voice]' + JSON.parse(msg));
+                this.setData({
+                    message: message
+                });
                 wx.downloadFile({
                     url: 'https://www.nodejser.site/getVoice?name=' + msg.data.name,
                     success: function(res) {
                         console.log(res);
+                        message.push('[download]' + JSON.parse(res));
+                        that.setData({
+                            message: message
+                        });
                         wx.playVoice({
                             filePath: res.tempFilePath
                         });

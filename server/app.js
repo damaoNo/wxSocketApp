@@ -68,6 +68,7 @@ app.get('/getVoice', function (req, res, next) {
     console.log('客户端请求文件：' + file);
     var stats = fs.statSync(file);
     if(stats.isFile()){
+        console.log('找到音频文件！开始传输...');
         res.set({
             'Content-Type': 'audio/silk',
             'Content-Disposition': 'attachment; filename=' + file,
