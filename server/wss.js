@@ -33,6 +33,7 @@ module.exports = {
                 sendData(type, user.getUsers());
             },
             voice: function (type, data) {
+                wss.broadcast(id + '说了一句话');
                 sendData(type, data);
             },
             otherWise: function (type) {
