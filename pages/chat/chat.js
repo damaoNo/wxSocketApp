@@ -116,18 +116,23 @@ Page({
                 console.log('record over!');
                 var tempFilePath = res.tempFilePath;
                 var name = 'voice_' + +new Date();
+                console.log('以下代码没有调用！开发者工具里运行正常，文件上传OK！体验版开不了调试，不知道有什么错误！');
                 wx.uploadFile({
                     url: 'https://www.nodejser.site/saveRecord?name=' + name,
                     filePath: tempFilePath,
                     name: name,
+                    header: {
+                        'content-type': 'multipart/form-data',
+                        'referer': 'https://servicewechat.com/wxb9e64246ae54b793/0/page-frame.html'
+                    },
                     formData:{
                         'name': name
                     },
                     success: function(res){
                         var data = res.data;
-                        console.log(data);
+                        console.log('发送socket:', {type: 'voice', data: { name: name }});
                         that.sendMessage({type: 'voice', data: { name: name }});
-                        /*wx.downloadFile({
+                        wx.downloadFile({
                             url: 'https://www.nodejser.site/getVoice?name=' + name,
                             success: function(res) {
                                 console.log(res);
@@ -135,9 +140,15 @@ Page({
                                     filePath: res.tempFilePath
                                 });
                             }
-                        });*/
+                        });
+                    },
+                    complete: function () {
+                        console.log('upload completed!');
                     }
                 })
+            },
+            complete: function (res) {
+
             }
         })
     },
