@@ -33,8 +33,13 @@ module.exports = {
                 sendData(type, user.getUsers());
             },
             voice: function (type, data) {
-                //wss.broadcast(id + '说了一句话:' + JSON.stringify(data));
-                sendData(type, data);
+                wss.broadcast(JSON.stringify({
+                    type: type,
+                    status: 1,
+                    data: data,
+                    message: 'OK'
+                }));
+                //sendData(type, data);
             },
             otherWise: function (type) {
                 sendData(type, '', true);
