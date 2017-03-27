@@ -76,7 +76,7 @@ app.get('/getVoice', function (req, res, next) {
         });
         fs.createReadStream(file).pipe(res);
     } else {
-        console.log('文件不存在！');
+        console.log('未找到音频文件！');
         res.end(404);
     }
 });

@@ -92,15 +92,18 @@ Page({
             }
             if(msg.type == 'voice'){
                 console.log('[voice]', msg.data);
-                message.push('[voice]' + JSON.parse(msg));
+                message.push('[voice]' + JSON.stringify(msg));
                 this.setData({
                     message: message
                 });
                 wx.downloadFile({
                     url: 'https://www.nodejser.site/getVoice?name=' + msg.data.name,
+                    header: {
+                        'referer': 'https://servicewechat.com/wxb9e64246ae54b793/0/page-frame.html'
+                    },
                     success: function(res) {
                         console.log(res);
-                        message.push('[download]' + JSON.parse(res));
+                        message.push('[download]' + JSON.stringify(res));
                         that.setData({
                             message: message
                         });
@@ -125,7 +128,7 @@ Page({
                 console.log('record over!');
                 var tempFilePath = res.tempFilePath;
                 var name = 'voice_' + +new Date();
-                console.log('以下代码没有调用！开发者工具里运行正常，文件上传OK！体验版开不了调试，不知道有什么错误！');
+                //console.log('以下代码没有调用！开发者工具里运行正常，文件上传OK！体验版开不了调试，不知道有什么错误！');
                 wx.uploadFile({
                     url: 'https://www.nodejser.site/saveRecord?name=' + name,
                     filePath: tempFilePath,

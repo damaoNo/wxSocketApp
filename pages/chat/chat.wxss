@@ -32,3 +32,6 @@
     right: 0;
     padding: 10rpx;
 }
+.message-item{
+    word-break: break-all;
+}

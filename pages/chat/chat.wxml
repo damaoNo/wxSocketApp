@@ -9,7 +9,7 @@
     </view>
     <view class="message">
         <text>大厅消息：</text>
-        <text wx:for="{{message}}" wx:key="m">{{item}}</text>
+        <text class="message-item" wx:for="{{message}}" wx:key="m">{{item}}</text>
     </view>
     <view class="bottom-bar">
         <button type="primary" bindtouchstart="onSpeak" bindtouchend="onSpeakEnd"> 按住说话 </button>
