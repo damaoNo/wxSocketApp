@@ -10,7 +10,7 @@ module.exports = {
         var id = Math.random().toString(36).substr(2);
         user.connectUser(id);
 
-        wss.broadcast(id + '大摇大摆地来了！');
+        //wss.broadcast(id + '大摇大摆地来了！');
         //socket.send('哈喽, ID：' + id);
 
         socket.on('message', function(message) {
@@ -24,7 +24,7 @@ module.exports = {
         socket.on('close', function (code, reason) {
             console.log(id, '离开了');
             user.disConnectUser(id);
-            wss.broadcast(id + '悄悄地走了！');
+            //wss.broadcast(id + '悄悄地走了！');
         });
 
         //消息类型处理器
@@ -33,7 +33,7 @@ module.exports = {
                 sendData(type, user.getUsers());
             },
             voice: function (type, data) {
-                wss.broadcast(id + '说了一句话:' + JSON.stringify(data));
+                //wss.broadcast(id + '说了一句话:' + JSON.stringify(data));
                 sendData(type, data);
             },
             otherWise: function (type) {

@@ -84,39 +84,31 @@ Page({
     },
     msgHandler: function (msg) {
         var that = this;
-        console.log(msg);
-        try {
-            msg = JSON.parse(msg);
-            if(msg.type == 'getUser'){
-                console.log('[users]', msg.data);
-            }
-            if(msg.type == 'voice'){
-                console.log('[voice]', msg.data);
-                message.push('[voice]' + JSON.stringify(msg));
-                this.setData({
-                    message: message
-                });
-                wx.downloadFile({
-                    url: 'https://www.nodejser.site/getVoice?name=' + msg.data.name,
-                    header: {
-                        'referer': 'https://servicewechat.com/wxb9e64246ae54b793/0/page-frame.html'
-                    },
-                    success: function(res) {
-                        console.log(res);
-                        message.push('[download]' + JSON.stringify(res));
-                        that.setData({
-                            message: message
-                        });
-                        wx.playVoice({
-                            filePath: res.tempFilePath
-                        });
-                    }
-                });
-            }
-        }catch (e){
-            message.push(msg);
-            this.setData({
-                message: message
+        message.push('[message]' + msg);
+        msg = JSON.parse(msg);
+        this.setData({
+            message: message
+        });
+        if(msg.type == 'getUser'){
+            console.log('[users]', msg.data);
+        }
+        if(msg.type == 'voice'){
+            //console.log('[voice]', msg.data);
+            wx.downloadFile({
+                url: 'https://www.nodejser.site/getVoice?name=' + msg.data.name,
+                header: {
+                    'referer': 'https://servicewechat.com/wxb9e64246ae54b793/0/page-frame.html'
+                },
+                success: function(res) {
+                    console.log(res);
+                    message.push('[download]' + JSON.stringify(res));
+                    that.setData({
+                        message: message
+                    });
+                    wx.playVoice({
+                        filePath: res.tempFilePath
+                    });
+                }
             });
         }
     },
@@ -141,10 +133,10 @@ Page({
                         'name': name
                     },
                     success: function(res){
-                        var data = res.data;
-                        console.log('发送socket:', {type: 'voice', data: { name: name }});
+                        //var data = res.data;
+                        //console.log('发送socket:', {type: 'voice', data: { name: name }});
                         that.sendMessage({type: 'voice', data: { name: name }});
-                        wx.downloadFile({
+                        /*wx.downloadFile({
                             url: 'https://www.nodejser.site/getVoice?name=' + name,
                             success: function(res) {
                                 console.log(res);
@@ -152,7 +144,7 @@ Page({
                                     filePath: res.tempFilePath
                                 });
                             }
-                        });
+                        });*/
                     },
                     complete: function () {
                         console.log('upload completed!');
