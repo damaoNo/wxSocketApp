@@ -1,0 +1,376 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>前端自动化构建</title>
+    <meta name="description" content="The front-end build tools">
+    <meta name="author" content="ChenChao">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="stylesheet" href="css/reveal.css">
+    <link rel="stylesheet" href="css/theme/black.css" id="theme">
+    <link rel="stylesheet" href="css/ppt.css">
+    <!-- Theme used for syntax highlighting of code -->
+    <link rel="stylesheet" href="lib/css/zenburn.css">
+    <!-- Printing and PDF exports -->
+    <script>
+        var link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.type = 'text/css';
+        link.href = window.location.search.match(/print-pdf/gi) ? 'css/print/pdf.css' : 'css/print/paper.css';
+        document.getElementsByTagName('head')[0].appendChild(link);
+    </script>
+    <!--[if lt IE 9]>
+    <script src="lib/js/html5shiv.js"></script>
+    <![endif]-->
+</head>
+
+<body ondblclick="showRemark();">
+<button id="toggleNote" style="display: none">Toggle Note</button>
+<div class="reveal">
+    <!-- Any section element inside of this container is displayed as a slide -->
+    <div class="slides">
+        <section data-transition="zoom">
+            <h1>分享：前端自动化构建</h1>
+
+            <p>
+                <small>edit by <a href="javascript:">陈超</a></small>
+            </p>
+            <p>
+                <small>本PPT由 <a href="https://github.com/hakimel/reveal.js">reveal.js</a> 驱动.</small>
+            </p>
+            <div class="remark">
+                <p>大家好，我是web前端组的陈超，感谢大家的支持和捧场，本期我给大家分享的是“前端自动化构建”。</p>
+                <p>可能有的人会问前端有什么项目构建，不就是些静态页面和一些图片吗？ 这在以前来讲貌似还确实是这么回事，但是现在已经是web工业化时代啦，
+                    所以我们前端也要用工程手段解决前端开发和部署优化的综合问题。现在就来聊聊关于前端项目构建的话题。</p>
+                <p>前端项目的 workflow 相对来讲是比较复杂的，因为我们要做的事情很多创建并规范项目目录结构，写样式，切图片，写脚本等等。项目任务进行的过程中，我们要优化项目，也有新的插件加入，同样
+                    也要不断的修改样式，等到测试OK了重新发布。在一个项目上线的整个过程中，我们做了很多重复的事情，有的很无聊，有的还容易出错，关键是这些重复的事情花费我们很多时间。</p>
+                <p>所以：我们应该使用工具来实现自动化构建前端项目！</p>
+            </div>
+        </section>
+
+        <section>
+            <h2>什么是前端工程化？</h2>
+            <p class="tl fragment">工程化要解决的问题：</p>
+            <ul class="fs16">
+                <li class="fragment">开发的角度：提高开发效率和降低维护难度</li>
+                <li class="fragment">部署的角度：代码检查、压缩合并、增量更新、单元测试..</li>
+            </ul>
+            <div class="remark">
+                <p>制定开发规范；使用模块化开发；文件监听；mock api...</p>
+                <p>构建的核心：对静态资源以及模板进行处理，即对前端资源的管理</p>
+                <p>工程化简单的说就是在前端工作流程中能用工具搞定的部分，用工具搞定它。</p>
+                <p>
+                    扩散：<span class="red">前后端分离</span>
+                </p>
+                <p>
+                    传统的开发是前端的代码部署在后端的代码里，然后耦合起来进行协同开发和发布，往往前端部分的修改都需要后端开发和测试人员的参与，开发效率没有达到最优化。
+                    前后端完全分离后，后端只负责提供接口数据给前端，前端负责页面的路由、渲染、交互逻辑，两者再没有直接关系，并且是两个不同的工程，这对于前端项目构建是非常有利的。
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>前端工程的几个阶段</h2>
+            <ol>
+                <li class="fs16 fragment">技术选型</li>
+                <li class="fs16 fragment">构建工具的选择</li>
+                <li class="fs16 fragment">模块化开发</li>
+                <li class="fs16 fragment">优化</li>
+            </ol>
+            <div class="remark">
+                <p>根据项目特征进行技术选型：合理的技术选型可以为项目节省许多工程量</p>
+                <p>构建工具：对静态资源进程压缩、校验、资源合并等基础功能，</p>
+                <p>js模块化：AMD/CMD/ES6 Module等，CSS模块化：sass/less预处理器</p>
+                <p>优化工作其实是一个复杂的工程，按需加载、延迟加载、预加载、请求合并、文件指纹、CDN部署、BigPipe、首屏CSS内嵌、服务端推送等等，有些相可能会与工程的管理构建相违背。</p>
+                <p>
+                    扩散：<span class="red">前端项目脚手架</span>
+                </p>
+            </div>
+        </section>
+
+        <section>
+            <h2>自动化构建应该解决什么问题？</h2>
+            <section>
+                <ul class="fs16" style="padding-bottom: 2rem">
+                    <li class="fragment">开发环境：构建自己本地web server，并且可以监听文件变更自动刷新，mock api等功能。</li>
+                    <li class="fragment">依赖问题：JavaScript和CSS的加载顺序</li>
+                    <li class="fragment">提升效率：Sass/Less，如css前缀</li>
+                    <li class="fragment">性能优化：文件合并，文件压缩，图片压缩等</li>
+                    <li class="fragment">代码分析：CSSLint，JSHint(JSLint/ESLint)</li>
+                    <li class="fragment">自动化测试：MV*单元测试，类库单元测试，GUI测试</li>
+                    <li class="fragment">项目发布：文件md5、api无缝切换等</li>
+                </ul>
+                <div class="remark">
+                    <p>依赖打包：分析文件依赖关系，将同步依赖的的文件打包在一起，解决加载顺序和减少http请求数量</p>
+                    <p>资源嵌入：如小于10KB的图片编译为base64格式嵌入文档</p>
+                    <p>代码审查：检测出不符合规范的代码，避免上线文件的低级错误</p>
+                    <p>测试：使用MV*模式开发下的单元测试、移动端页面分辨率显示、模拟用户操作</p>
+                    <p>hash指纹：通过给文件名加入hash指纹，以应对浏览器缓存引起的静态资源更新问题</p>
+                </div>
+            </section>
+        </section>
+
+        <section>
+            <h2>前端项目构建工具有哪些？</h2>
+            <div style="padding-bottom: 5rem">
+                <div class="h2 fragment tl">Grunt:</div>
+                <p class="fs12 fragment tl">基于Node.js的项目构建工具，通过配置Gruntfile.js它可以自动运行你所设定的task。<a href="http://www.gruntjs.net/">grunt中文网</a></p>
+                <div class="h2 fragment tl">Gulp:</div>
+                <p class="fs12 fragment tl">同grunt一样也是基于Node.js，用各种gulp的插件组装(编写)你想要的任何task。<a href="http://www.gulpjs.com.cn/">gulp中文网</a></p>
+                <div class="h2 fragment tl">Webpack:</div>
+                <p class="fs12 fragment tl">可以看做是模块打包机（module bundler）：它做的事情是，分析你的项目结构，找到JavaScript模块以及其它的一些浏览器不能直接运行的拓展语言（Scss，TypeScript等），
+                    并将其打包为合适的格式以供浏览器使用。<a href="http://webpack.github.io/">Webpack官网</a></p>
+            </div>
+            <div class="remark" style="bottom: -76px">
+                <p>其他： 谷歌的yeoman, 百度的fis, 微信前端团队的weflow, angular-cli, vue-cli等等</p>
+                <p>实现的功能都是大同小异，前端架构大部分工作要解决的是：如何用工具连接框架和规范的问题，而不是简单的前端源码构建。
+                    <br>使用哪种工具并不重要，只要保证：流程构建的灵活、<span class="red">符合实际需要</span>、使用相对简单就足够了。</p>
+                <p>个人看来比较偏向 gulp ， 需要用到 webpack 的项目也可以用 gulp + webpack 的组合来打造适合我们自己的前端开发体系。</p>
+
+            </div>
+        </section>
+
+        <section>
+            <div class="h2">Gulp</div>
+            <section>
+                <h4 class="tl">为什么是gulp?</h4>
+                <ul>
+                    <li class="fs16 fragment">流式构建（没有磁盘密集型I/O操作）</li>
+                    <li class="fs16 fragment">跨平台（支持windows）</li>
+                    <li class="fs16 fragment">依赖插件（各种任务依赖插件）</li>
+                    <li class="fs16 fragment">易于学习：通过最少的 API，掌握 Gulp 毫不费力，如同一系列流管道。</li>
+                    <li class="fs16 fragment">代码驱动（异步，任务可并发执行），简单的任务直接使用插件，复杂任务需要开发人员编写具体的任务流程代码！</li>
+                </ul>
+                <p class="tl fs16 fragment">
+                    官方的描述：通用，高效，使用简单，学习成本低
+                    <br>
+                    个人体会：使用灵活，"缺点"是在构建实践上，需要写的人有好的实践
+                </p>
+                <div class="remark">
+                    <p>概念：流是字节序列的抽象概念，例如文件、输入/输出设备、内部进程通信管道等。流提供一种向后备存储器写入字节和从后备存储器读取字节的方式。</p>
+                </div>
+            </section>
+            <section>
+                <h4 class="tl">基本使用方法：</h4>
+                <div class="tl">
+                    <div class="fragment">
+                        <p>1. 创建 package.json 文件，根据提示完成即可</p>
+                        <pre><code class="hljs line">$ npm init</code></pre>
+                    </div>
+                    <div class="fragment">
+                        <p>2. 安装 全局gulp 和 gulp 模块</p>
+                        <pre><code class="hljs line">$ npm install gulp -g
+$ npm install gulp --save</code></pre>
+                    </div>
+                    <div class="fragment">
+                        <p>3. 创建 gulpfile.js 文件</p>
+                        <p class="fs12">gulpfile.js是gulp任务的主文件，一些常用的任务可以使用官网上的插件代码，自己的工作流和复杂的任务需要自己根据实际情况编写任务代码。</p>
+                    </div>
+                </div>
+                <div class="remark" style="bottom: -76px">
+                    <p>使用 npm init 可以根据提示一步一步创建 package.json 文件。</p>
+                    <p>全局 gulp 提供 cli 命令，gulp 模块提供项目的开发依赖。</p>
+                    <p>一般来讲，gulpfile.js 放在项目的根目录。</p>
+                </div>
+            </section>
+            <section class="tl">
+                <h2>几个常用的API</h2>
+                <div class="fragment" style="margin-bottom: 20px">
+                    <small class="fs12">gulp.src(globs[, options])</small>
+                    <small class="fs12">输出符合所提供的匹配模式（<a href="https://github.com/isaacs/node-glob" target="_blank">glob</a>）
+                        或者匹配模式的数组（array of globs）的文件。 将返回一个 <a href="https://github.com/gulpjs/vinyl-fs" target="_blank">Vinyl files</a> 的
+                        <a href="https://nodejs.org/api/stream.html" target="_blank">stream</a> 它可以被 piped 到别的插件中。</small>
+                </div>
+                <div class="fragment" style="margin-bottom: 20px">
+                    <small class="fs12">gulp.dest(path[, options])</small>
+                    <small class="fs12">能被 pipe 进来，并且将会写文件。并且重新输出（emits）所有数据，因此你可以将它 pipe 到多个文件夹。如果某文件夹不存在，将会自动创建它。</small>
+                </div>
+                <div class="fragment" style="margin-bottom: 20px">
+                    <small class="fs12">gulp.task(name[, deps], fn)</small>
+                    <small class="fs12">定义一个使用 Orchestrator 实现的任务（task）</small>
+                </div>
+                <div class="fragment">
+                    <small class="fs12">gulp.watch(glob [, opts], tasks) 或 gulp.watch(glob [, opts, cb])</small>
+                    <small class="fs12">监视文件，并且可以在文件发生改动时候做一些事情。它总会返回一个 EventEmitter 来发射（emit） change 事件。</small>
+                </div>
+            </section>
+            <section>
+                <div class="tl">
+                    <p>定义基本的 gulp 任务</p>
+                    <pre><code class="hljs">
+//导入 gulp 模块
+var gulp = require ('gulp');
+
+//gulp.task定义任务
+//参数1：任务名称
+//参数2：任务具体要做什么
+gulp.task('default', function () {
+    console.log('这是一个默认的任务，但啥也没干！');
+});
+                    </code></pre>
+                </div>
+                <div class="remark">
+                    <p>安装 gulp-debug 模块可以帮助输出调试信息。</p>
+                </div>
+            </section>
+            <section>
+                <div class="tl">
+                    <h4>使用插件：</h4>
+                    <small>gulp的插件安装很简单直接使用 'npm install [插件名] --save' 安装，gulp插件一般带有前缀 gulp- </small>
+                    <pre><code class="hljs line">$ npm install gulp-jshint --save</code></pre>
+                </div>
+                <pre><code class="hljs">
+var gulp = require ('gulp');
+//导入 jshint 插件
+var jshint = require('gulp-jshint');
+
+//定义js代码检测任务
+gulp.task('js-check', function () {
+    return gulp.src('./gulpfile.js')
+        .pipe(jshint())
+        .pipe(jshint.reporter('jshint-stylish')); //指定输出格式
+});
+                </code></pre>
+            </section>
+
+            <section class="tl">
+                <div class="h2">常用的插件</div>
+                <div>
+                <pre><code class="hljs line">$ npm install gulp-concat --save
+$ npm install gulp-uglify --save
+$ npm install gulp-imagemin --save
+$ npm install gulp-cssmin --save
+$ npm install minimist --save
+...</code></pre>
+                </div>
+            </section>
+        </section>
+
+        <section>
+            <div class="h2">new_web工程的实践：经纪人项目</div>
+            <div class="tl">
+                <small></small>
+                <ul class="fs16">
+                    <li>web-server</li>
+                    <li>.net API的代理</li>
+                    <li>使用脚手架创建项目</li>
+                    <li>自定义模板规则</li>
+                    <li>纯静态项目的发布</li>
+                    <li>scss文件watch 和 compass编译和精灵图</li>
+                    <li>js合并压缩</li>
+                    <li>图片压缩</li>
+                    <li>移动端各分辨率下的页面自动化预览测试</li>
+                </ul>
+            </div>
+            <div class="remark">
+                <p>介绍：new_web工程是前端 H5 项目的一个集合，港股、A股、开户、小额贷、经纪人、活动页等项目都集中在一起。这些项目有共同点，也有不同点。</p>
+            </div>
+        </section>
+
+        <section>
+            <h4>参考资料和网站</h4>
+            <div class="tl">
+                <ul class="urls">
+                    <li>Gulp中文网：<a href="http://www.gulpjs.com.cn/" target="_blank">http://www.gulpjs.com.cn/</a></li>
+                    <li>StuQ-Gulp实战和原理解析：<a href="http://i5ting.github.io/stuq-gulp/" target="_blank">http://i5ting.github.io/stuq-gulp/</a></li>
+                    <li>JavaScript构建（编绎）系统大比拼：Grunt vs. Gulp vs. NPM <a href="http://news.cnblogs.com/n/502111/" target="_blank">http://news.cnblogs.com/n/502111/</a></li>
+                    <li>前端工具里面gulp和fis，有哪些优缺点？<a href="http://www.zhihu.com/question/26712510" target="_blank">http://www.zhihu.com/question/26712510</a></li>
+                </ul>
+            </div>
+        </section>
+
+        <section>
+            <h2 class="h2">THE END</h2>
+            <p>感谢大家！</p>
+            <p>Q & A</p>
+            <small style="font-size: 0.8rem">
+                PPT在线访问地址: <a href="http://10.100.71.76:8010/document/workflow/gulp&grunt&webpack.ppt.html">前端项目构建</a>
+            </small>
+            <div class="remark">
+                非常感谢各位能来参加这次分享，
+            </div>
+        </section>
+
+    </div>
+
+</div>
+<script src="lib/js/head.min.js"></script>
+<script src="js/reveal.js"></script>
+<script>
+    // More info https://github.com/hakimel/reveal.js#configuration
+    Reveal.initialize({
+        width: 1024,
+        controls: true,
+        progress: true,
+        history: true,
+        center: true,
+        transition: 'convex', // none/fade/slide/convex/concave/zoom
+        // More info https://github.com/hakimel/reveal.js#dependencies
+        dependencies: [
+            {
+                src: 'lib/js/classList.js', condition: function () {
+                return !document.body.classList;
+            }
+            },
+            {
+                src: 'plugin/markdown/marked.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'plugin/markdown/markdown.js', condition: function () {
+                return !!document.querySelector('[data-markdown]');
+            }
+            },
+            {
+                src: 'plugin/highlight/highlight.js', async: true, callback: function () {
+                hljs.initHighlightingOnLoad();
+            }
+            },
+            {src: 'plugin/zoom-js/zoom.js', async: true},
+            {src: 'plugin/notes/notes.js', async: true}
+        ]
+    });
+    Reveal.configure({
+        keyboard: {
+            79: function (e) {
+                showRemark();
+            }
+        }
+    });
+    Reveal.addEventListener( 'slidechanged', function( event ) {
+        var remark = event.previousSlide.querySelector('.remark');
+        remark && (remark.className = 'remark');
+    } );
+    function showRemark() {
+        var remark = Reveal.getCurrentSlide().querySelector('.remark');
+        if(remark){
+            if(remark.className.indexOf('show') > -1){
+                remark.className = 'remark';
+            }else{
+                remark.className = 'remark show';
+            }
+        }
+    }
+    function isPC(){
+        var userAgentInfo = navigator.userAgent;
+        var Agents = ["Android", "iPhone", "SymbianOS", "Windows Phone", "iPad", "iPod"];
+        for (var v = 0; v < Agents.length; v++) {
+            if (userAgentInfo.indexOf(Agents[v]) > 0) {
+                return false;
+            }
+        }
+        return true;
+    }
+    if(!isPC()){
+        document.body.className = 'notPc';
+        var noteBtn = document.getElementById('toggleNote');
+        noteBtn.style.display = 'block';
+        noteBtn.onclick = showRemark;
+    }
+</script>
+<script src="js/jquery.js"></script>
+</body>
+</html>

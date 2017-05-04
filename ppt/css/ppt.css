@@ -1,0 +1,72 @@
+.reveal small{
+    display: inherit;
+}
+.reveal .h2{
+    font-size: 3rem;
+    padding-bottom: 1rem;
+}
+.reveal .red{
+    color: red;
+    font-weight: bold;
+}
+.reveal .tl{
+    text-align: left;
+}
+.reveal .tr{
+    text-align: right;
+}
+.reveal table td{
+    border-bottom: none;
+    font-size: 2rem;
+}
+.reveal pre code{
+    padding: 0 1.2rem;
+    border-radius: 4px;
+}
+.reveal pre code.line{
+    padding: 1.2rem;
+}
+.reveal .urls li{
+    font-size: 1.4rem;
+}
+.reveal .fs12{
+    font-size: 1.2rem;
+}
+.reveal .fs16{
+    font-size: 1.6rem;
+}
+.reveal .remark{
+    position: fixed;
+    bottom: -300px;
+    left: 0;
+    opacity: 0;
+    font-size: 1rem;
+    /*transition: all 0.5s;*/
+}
+.reveal .remark p{
+    font-size: 0.8rem;
+    text-align: justify;
+    line-height: 1.4rem;
+    margin: 6px 0;
+    text-indent: 2rem;
+}
+.notPc .reveal .remark p{
+    font-size: 1.2rem;
+}
+.reveal .remark.show{
+    opacity: 1;
+    bottom: -150px;
+}
+.notPc .reveal .remark.show{
+    bottom: -300px;
+}
+.reveal .remark:before{
+    content: 'Notes :';
+    position: absolute;
+    left: 0;
+    top: -1.5rem;
+    color: chartreuse;
+}
+.reveal ol, .reveal dl, .reveal ul{
+    display: block;
+}

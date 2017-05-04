@@ -3,8 +3,8 @@
         <image class="userinfo-avatar" src="{{userInfo.avatarUrl}}" background-size="cover"></image>
         <text class="userinfo-nickname">昵称：{{userInfo.nickName}}</text>
         <text class="sysInfo">手机型号：{{sysInfo.model}}   网络类型：{{networkType}}</text>
-        <view wx:if="{{networkType == '2g' || networkType == '3g'}}" class="bad-net-work"> 您使用的网络不稳定，可能会影响游戏体验！ </view>
-        <view wx:if="{{networkType == '4g' || networkType == 'wifi'}}" class="good-net-work"> 您使用的网络顺畅，尽情游戏吧！ </view>
+        <view wx:if="{{networkType == '2g' || networkType == '3g'}}" class="bad-net-work"> 您使用的网络不稳定，可能会影响聊天体验！ </view>
+        <view wx:if="{{networkType == '4g' || networkType == 'wifi'}}" class="good-net-work"> 您使用的网络顺畅，尽情畅聊吧！ </view>
     </view>
     <view class="btn-area">
         <navigator class="enterBtn" url="../chat/chat">进入聊天</navigator>

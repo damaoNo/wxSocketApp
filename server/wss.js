@@ -33,13 +33,7 @@ module.exports = {
                 sendData(type, user.getUsers());
             },
             voice: function (type, data) {
-                wss.broadcast(JSON.stringify({
-                    type: type,
-                    status: 1,
-                    data: data,
-                    message: 'OK'
-                }));
-                //sendData(type, data);
+                broadcastData(type, data);
             },
             otherWise: function (type) {
                 sendData(type, '', true);
@@ -51,6 +45,24 @@ module.exports = {
                 msgHandlers[type](type, data);
             }else{
                 msgHandlers.otherWise(type);
+            }
+        }
+
+        function broadcastData(type, data, isErrorMsgType) {
+            if(isErrorMsgType){
+                wss.broadcast(JSON.stringify({
+                    type: type,
+                    status: 0,
+                    data: '',
+                    message: 'Error message type!'
+                }));
+            }else{
+                wss.broadcast(JSON.stringify({
+                    type: type,
+                    status: 1,
+                    data: data,
+                    message: 'OK'
+                }));
             }
         }
 
