@@ -21,6 +21,7 @@ module.exports = {
         }
     },
     getUserInfo: function (id) {
+        //todo
         return users[id];
     }
 };
