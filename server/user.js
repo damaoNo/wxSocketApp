@@ -21,7 +21,7 @@ module.exports = {
         }
     },
     getUserInfo: function (id) {
-        //todofdsa
+        //todo
         return users[id];
     }
 };
