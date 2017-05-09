@@ -19,5 +19,8 @@ module.exports = {
         if(users[socketId]){
             delete users[socketId];
         }
+    },
+    getUserInfo: function (id) {
+        return users[id];
     }
 };
