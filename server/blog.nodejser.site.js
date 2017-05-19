@@ -19,7 +19,7 @@ const server = http.createServer((req, res) => {
             </style>
         </head>
         <body>
-            <iframe src="http://s30735.rxsg.ledu.com/" frameborder="0"></iframe>
+            <h3>Hello world!</h3>
         </body>
         </html>
     `);
