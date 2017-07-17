@@ -193,7 +193,7 @@ function init() {
 
   var room = window.location.hash.slice(1);
 
-  rtc.connect("ws:" + window.location.href.substring(window.location.protocol.length).split('#')[0], room);
+  rtc.connect("wss:" + window.location.href.substring(window.location.protocol.length).split('#')[0], room);
 
   rtc.on('add remote stream', function(stream, socketId) {
     console.log("ADDING REMOTE STREAM...");
