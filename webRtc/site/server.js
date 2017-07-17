@@ -1,15 +1,5 @@
 var https = require('https');
 var app = require('express')();
-var webRTC = require('webrtc.io').listen(server);
-
-var port = 443; //process.env.PORT || 443;
-var options = {
-  key: fs.readFileSync('./keys/214025060130250.key'),
-  cert: fs.readFileSync('./keys/214025060130250.pem')
-};
-var server = https.createServer(options, app).listen(port, function listening() {
-  console.log('Listening on %d', server.address().port);
-});
 
 app.get('/', function(req, res) {
   res.sendfile(__dirname + '/index.html');
@@ -30,6 +20,17 @@ app.get('/script.js', function(req, res) {
 app.get('/webrtc.io.js', function(req, res) {
   res.sendfile(__dirname + '/webrtc.io.js');
 });
+
+var port = 443; //process.env.PORT || 443;
+var options = {
+  key: fs.readFileSync('./keys/214025060130250.key'),
+  cert: fs.readFileSync('./keys/214025060130250.pem')
+};
+var server = https.createServer(options, app).listen(port, function listening() {
+  console.log('Listening on %d', server.address().port);
+});
+
+var webRTC = require('webrtc.io').listen(server);
 
 webRTC.rtc.on('chat_msg', function(data, socket) {
   var roomList = webRTC.rtc.rooms[data.room] || [];
