@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>socket</title>
+</head>
+<body>
+<script>
+    var wss = new WebSocket('wss://www.nodejser.site');
+    wss.onopen = function() {
+        console.log('socket已连接');
+    };
+    wss.onmessage = function (data) {
+        console.log('收到消息..', data);
+    };
+    wss.onclose = function() {
+        console.log('socket已关闭');
+    };
+</script>
+</body>
+</html>
