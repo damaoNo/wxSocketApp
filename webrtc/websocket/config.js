@@ -20,5 +20,5 @@ module.exports = {
     videoPath: path.resolve(__dirname, '../webrtcvideo001'),
 
     //mp4 url访问路径
-    videoUrl: 'https://www.nodejser.site:8009/'
+    videoUrl: 'http://www.nodejser.site:8009/'
 };
