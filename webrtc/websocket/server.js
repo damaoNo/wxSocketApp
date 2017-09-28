@@ -8,6 +8,7 @@ var fs = require('fs');
 var https = require('https');
 var WebSocket = require('ws');
 var Uuid = require('uuid');
+var log = require('./log');
 var config = require('./config');
 var port = 443;
 var server = https.createServer({
@@ -40,10 +41,20 @@ wss.broadcast = function broadcast(message, verify) {
                 if(client.verify === verify){
                     if(typeof message === 'object'){
                         //双向实时
-                        client.send(message);
+                        client.send(message, function (error) {
+                            if(error){
+                                console.log(error);
+                                log(error);
+                            }
+                        });
                     }
                     if(typeof message === 'string'){
-                        client.send(message);
+                        client.send(message, function (error) {
+                            if(error){
+                                console.log(error);
+                                log(error);
+                            }
+                        });
                     }
                 }
             }
@@ -79,22 +90,44 @@ wss.on('connection', function connection(socket) {
                 'record start': function () {
                     var fileName = Uuid.v4() + config.suffix;
                     var tempFilePath = path.join(config.tempVideoPath, fileName);
+                    var date = new Date().toLocaleDateString();
+                    var savePath = path.join(config.videoPath, date);
                     fileWriteStream = fs.createWriteStream(tempFilePath, {
                         flags: 'a',
                         encoding: null,
-                        mode: 0o666
+                        mode: '0666'
                     });
                     fileWriteStream.on('open', function () {
                         console.log('file write stream open ...');
+                        log('file write stream open ...');
+                        fs.stat(savePath, function (err, stat) {
+                            if(err){
+                                console.log('创建新的目录:', savePath);
+                                log('创建新的目录:', savePath);
+                                fs.mkdir(savePath);
+                            }
+                        });
                     });
                     fileWriteStream.on('close', function () {
                         console.log('file write stream closed!');
-                        fs.rename(tempFilePath, path.join(config.videoPath, fileName), function (err) {
+                        log('file write stream closed!');
+                        fs.rename(tempFilePath, path.join(savePath, fileName), function (err) {
                             if(err){
                                 console.log('重命名文件失败！');
-                                socket.send(JSON.stringify({action: 'saved failed', errorMessage: '视频保存失败'}));
+                                log('重命名文件失败！');
+                                socket.send(JSON.stringify({action: 'saved failed', errorMessage: '视频保存失败'}), function (error) {
+                                    if(error){
+                                        console.log(error);
+                                        log(error);
+                                    }
+                                });
                             }else{
-                                socket.send(JSON.stringify({action: 'saved success', path: ['videos', fileName].join('/')}));
+                                socket.send(JSON.stringify({action: 'saved success', path: ['webrtcvideo001', date, fileName].join('/')}), function (error) {
+                                    if(error){
+                                        console.log(error);
+                                        log(error);
+                                    }
+                                });
                                 wss.broadcast(JSON.stringify({
                                     action: 'user recode over',
                                     user: token,
@@ -111,6 +144,7 @@ wss.on('connection', function connection(socket) {
                 },
                 'other wise': function () {
                     console.log('未定义的 action!');
+                    log('未定义的 action!');
                 }
             };
             actionFn[actionFn[action] ? action : 'other wise']();
