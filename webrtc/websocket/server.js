@@ -29,6 +29,27 @@ var wss = new WebSocket.Server({
     }
 });
 
+function dateFormat(fmt) {
+    let o = {
+        "M+": this.getMonth() + 1, //月份
+        "d+": this.getDate(), //日
+        "H+": this.getHours(), //小时
+        "m+": this.getMinutes(), //分
+        "s+": this.getSeconds(), //秒
+        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+        "S": this.getMilliseconds() //毫秒
+    };
+    if (/(y+)/.test(fmt)) {
+        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+    }
+    for (let k in o){
+        if(o.hasOwnProperty(k)){
+            if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+        }
+    }
+    return fmt;
+}
+
 //定义消息广播
 wss.broadcast = function broadcast(message, verify) {
     wss.clients.forEach(function each(client) {
@@ -90,7 +111,7 @@ wss.on('connection', function connection(socket) {
                 'record start': function () {
                     var fileName = Uuid.v4() + config.suffix;
                     var tempFilePath = path.join(config.tempVideoPath, fileName);
-                    var date = new Date().toLocaleDateString();
+                    var date = dateFormat.call(new Date(), 'yyyy-MM-dd');
                     var savePath = path.join(config.videoPath, date);
                     fileWriteStream = fs.createWriteStream(tempFilePath, {
                         flags: 'a',
