@@ -29,6 +29,11 @@ var wss = new WebSocket.Server({
     }
 });
 
+process.on('uncaughtException', function (err) {
+    console.log(`Caught exception: ${err}`);
+    log(`Caught exception: ${err}`);
+});
+
 function dateFormat(fmt) {
     let o = {
         "M+": this.getMonth() + 1, //月份
