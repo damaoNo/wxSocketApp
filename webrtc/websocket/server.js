@@ -143,7 +143,10 @@ wss.on('connection', function connection(socket) {
                                     }
                                 });
                             }else{
-                                socket.send(JSON.stringify({action: 'saved success', path: ['webrtcvideo001', date, fileName].join('/')}), function (error) {
+                                let videoFile = ['webrtcvideo001', date, fileName].join('/');
+                                console.log(`${videoFile} 文件已保存！`);
+                                log(`${videoFile} 文件已保存！`);
+                                socket.send(JSON.stringify({action: 'saved success', path: videoFile}), function (error) {
                                     if(error){
                                         console.log(error);
                                         log(error);
