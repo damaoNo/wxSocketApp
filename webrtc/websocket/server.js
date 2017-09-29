@@ -15,8 +15,38 @@ var server = https.createServer({
     key: config.key,
     cert: config.cert
 }, function (req, res) {
-    res.writeHead(200);
-    res.end('hello\n');
+    let query = url.parse(req.url).query;
+    if(query){
+        let qr = query.split('&')[0].split('=');
+        let queryType = qr[0];
+        let queryValue = qr[1];
+        if(queryType === 'log'){
+            let logDir = path.resolve(__dirname, '../webrtcvideo001');
+            let logFile = path.join(logDir, `${queryValue}.log`);
+            fs.stat(logFile, function (err, stat) {
+                if(err){
+                    res.writeHead(500);
+                    res.end(err.toString());
+                }else{
+                    fs.readFile(logFile, 'utf8', function (err, content) {
+                        if(err){
+                            res.writeHead(500);
+                            res.end(err.toString());
+                        }else{
+                            res.writeHead(200);
+                            res.end(content);
+                        }
+                    });
+                }
+            });
+        }else{
+            res.writeHead(200);
+            res.end('Query type error: type is not "log"!\n');
+        }
+    }else{
+        res.writeHead(200);
+        res.end('hello\n');
+    }
 }).listen(port, function listening() {
     console.log('WebSocket server listening on %d', server.address().port);
 });
