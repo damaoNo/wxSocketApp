@@ -128,8 +128,8 @@ wss.on('connection', function connection(socket) {
                         log('file write stream open ...');
                         fs.stat(savePath, function (err, stat) {
                             if(err){
-                                console.log('创建新的目录:', savePath);
-                                log('创建新的目录:', savePath);
+                                console.log(`创建新的目录:${savePath}`);
+                                log(`创建新的目录:${savePath}`);
                                 fs.mkdir(savePath);
                             }
                         });
