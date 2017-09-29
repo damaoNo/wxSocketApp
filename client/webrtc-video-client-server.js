@@ -2,6 +2,8 @@
  * my express
  */
 
+var fs = require('fs');
+var https = require('https');
 var http = require('http');
 var express = require('express');
 var path = require('path');
@@ -54,8 +56,13 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
+
+var options = {
+  key: fs.readFileSync(__dirname + '/keys/214025060130250.key'),
+  cert: fs.readFileSync(__dirname + '/keys/214025060130250.pem')
+};
 var port = 8009;
-var server = http.createServer(app);
+var server = https.createServer(options, app);
 server.listen(port, function () {
   console.log(`server start at port: ${port}`);
 });
