@@ -1,0 +1,248 @@
+@charset "utf-8";
+html,body {
+    margin: 0px;
+    padding: 0px;
+    font-family: 微软雅黑;
+    width: 100%;
+    height: 100%;
+    background-color: rgb(232, 232, 232);
+    overflow: hidden;
+}
+input::-ms-clear{display:none}
+.tr {
+    text-align: right;
+}
+.di {
+    display: inline-block;
+}
+.fb {
+    font-weight: bold;
+}
+#Prepare {
+    width: 100%;
+    height: 100%;
+    padding-top: 51px;
+    position: relative;
+}
+#Header {
+    width: 100%;
+    height: 50px;
+    line-height: 50px;
+    top: 0;
+    font-size: 16px;
+    color: #fff;
+    text-align: center;
+    border-top: 1px solid #ccc;
+    background-color: #1199EE;
+    position: absolute;
+}
+#AnyChatApp {
+    height: 100%;
+    width: 40%;
+    float: left;
+    padding: 0 5px 10px 10px;
+}
+.top .text{
+    font-size: 18px;
+    color: #333;
+    line-height: 50px;
+    float: left;
+    margin-left: 20px;
+}
+.line{
+  height: 18px;
+  background-image: url("../images/client/line.png");
+  margin-top: 10px;
+}
+.start{
+    background: #fff;
+}
+.start .ready-face{
+    width: 350px;
+    height: 380px;
+    margin: 0 auto;
+    position: relative;
+}
+.start .ready-face img{
+    position: absolute;
+    left: 85px;
+    top: 180px;
+}
+.start .ready-face p{
+    position: absolute;
+    left: 30px;
+    top: 405px;
+    font-size: 20px;
+    letter-spacing: 5px;
+    color: #333;
+}
+.wait-content{
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    width: 100%;
+    height: 100%;
+    position: relative;
+}
+.wait-content .clock{
+    width: 200px;
+    height: 200px;
+    margin: 0 auto;
+    background: url("../images/client/wiatclockbg.png");
+}
+.wait-content .clock p{
+    color: #fff;
+    font-size: 24px;
+    user-select:none;
+    -ms-user-select:none;
+    cursor: default;
+    text-align: center;
+    padding:  135px 0 0;
+}
+.wait-content .text{
+    font-size: 18px;
+    line-height: 30px;
+    margin-top: 25px;
+    text-align: center;
+}
+.wait-content button{
+    width: 200px;
+    height: 55px;
+    color: #fff;
+    border-radius: 10px;
+    background: #004790;
+    font-size: 20px;
+}
+#IframeBox {
+    height: 100%;
+    width: 60%;
+    float: left;
+    padding: 0 10px 10px 5px;
+}
+#IframeBox iframe {
+    border: none;
+    padding: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+}
+.Client-Area{
+    width: 100%;
+    height: 100%;
+    background: #004790;
+    position: absolute;
+}
+.Client-Area>img{
+    width: 100px;
+    height: 120px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -60px;
+    margin-left: -50px;
+}
+#Client-Area{
+    width: 100%;
+    height: 100%;
+    position: relative;
+    /*background-color: #004790;*/
+}
+#Client-Area > video{
+    position: relative;
+    top: -20%;
+    left: -20%;
+    width: 140%;
+    height: 140%;
+}
+.Agent-Area{
+    width: 160px;
+    height: 120px;
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    background-color: #004790;
+    z-index: 2;
+}
+.Agent-Area>img{
+    width: 70px;
+    height: 84px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -42px;
+    margin-left: -35px;
+    z-index: 222;
+}
+#Agent-Area{
+    width: 160px;
+    height: 120px;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    z-index: 1000;
+    /*background-color: #004790;*/
+}
+#Agent-Area > video {
+    width: 100%;
+    height: 100%;
+}
+.process-init{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: calc(100vh - 51px);
+    background-color: #fff; 
+}
+.process-queue{
+    display: table;
+    width: 100%;
+    height: calc(100vh - 101px);
+    background-color: #fff; 
+}
+.cancel-queue-button{
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    height: 50px;
+    width: 100%;
+    font-size: 18px;
+    color: #fff;
+    background: rgb(0,126,206);
+    border: none;
+}
+.queue-user-no{
+    color: rgb(0,126,206);
+    padding: 0 5px;
+    font-weight: bold;
+}
+.process-video {
+    width: 100%;
+    height: 100%;
+}
+#opacity-bg {
+    width: calc(100% - 180px);
+    height: 120px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    opacity: 0.4;
+    z-index: 1009;
+    background-color: #000;
+}
+#Question-Content {
+    overflow-y: auto;
+    width: calc(100% - 180px);
+    height: 120px;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    color: #fff;
+    z-index: 1010;
+    padding-left: 8px;
+}
+#Question-Content .message {
+    color: rgb(102, 194, 253);
+}

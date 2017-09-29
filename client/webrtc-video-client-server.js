@@ -27,6 +27,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(express.static(path.resolve(__dirname, '../webrtc/')));
+app.use(express.static(path.join(__dirname, 'AnyChatH5')));
 
 app.use('/', function (req, res, next) {
   res.send({

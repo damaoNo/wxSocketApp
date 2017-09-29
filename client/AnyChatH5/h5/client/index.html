@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+	<title>AnyChat H5客服</title>
+	<link rel="icon" href="./images/logo.ico" type="image/x-icon">
+	<link type="text/css" rel="stylesheet" href="plugin/bootstrap-3.3.7/css/bootstrap.min.css" charset="UTF-8">
+	<link type="text/css" rel="stylesheet" href="css/anychat.css" charset="UTF-8">
+	<link type="text/css" rel="stylesheet" href="css/index.css" charset="UTF-8">
+	<style type="text/css">
+		.no-close > .modal-content >.modal-header >button{
+		  display: none;
+		}
+		.loadingSpan{
+			width: 60px;
+			vertical-align: middle;
+			display: inline-block;
+		}
+		.typing_loader{
+			width: 6px;
+			height: 6px;
+			border-radius: 50%;
+			-webkit-animation: typing 1s linear infinite alternate;
+			-moz-animation: Typing 1s linear infinite alternate;
+			animation: typing 1s linear infinite alternate;
+			margin: 0px auto; /* Not necessary- its only for layouting*/
+			position: relative;
+			left: -26px;
+		}
+		@-webkit-keyframes typing{
+			0%{
+				background-color: rgba(2, 138, 255, 1);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,0.2),
+				24px 0px 0px 0px rgba(2, 138, 255,0.2);
+			}
+			25%{
+				background-color: rgba(2, 138, 255, 0.4);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,2),
+				24px 0px 0px 0px rgba(2, 138, 255,0.2);
+			}
+			75%{ background-color: rgba(2, 138, 255, 0.4);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,0.2),
+				24px 0px 0px 0px rgba(2, 138, 255,1);
+			}
+		}
+
+		@-moz-keyframes typing{
+			0%{
+				background-color: rgba(2, 138, 255, 1);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,0.2),
+				24px 0px 0px 0px rgba(2, 138, 255,0.2);
+			}
+			25%{
+				background-color: rgba(2, 138, 255, 0.4);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,2),
+				24px 0px 0px 0px rgba(2, 138, 255,0.2);
+			}
+			75%{ background-color: rgba(2, 138, 255, 0.4);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,0.2),
+				24px 0px 0px 0px rgba(2, 138, 255,1);
+			}
+		}
+
+		@keyframes typing{
+			0%{
+				background-color: rgba(2, 138, 255, 1);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,0.2),
+				24px 0px 0px 0px rgba(2, 138, 255,0.2);
+			}
+			25%{
+				background-color: rgba(2, 138, 255, 0.4);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,2),
+				24px 0px 0px 0px rgba(2, 138, 255,0.2);
+			}
+			75%{ background-color: rgba(2, 138, 255, 0.4);
+				box-shadow: 12px 0px 0px 0px rgba(2, 138, 255,0.2),
+				24px 0px 0px 0px rgba(2, 138, 255,1);
+			}
+		}
+	</style>
+</head>
+<body>
+	<div id="Prepare">
+		<!--客户端页面头部-->
+		<div id="Header">
+			客户排队
+			<!--<div class="top">-->
+				<!--<p class="text text-center">-->
+					<!---->
+				<!--</p>-->
+			<!--</div>-->
+		</div>
+		<!--客户端页面主体-->
+		<div id="App">
+			<!--初始化等待模块-->
+			<div class="process-init">
+				<img src="./images/client/readyface1.gif" alt="img" style="width: 300px;margin-top: -80px;"/>
+				<div style="font-size: 22px;">
+					正在连接客服，请稍候
+					<div class="loadingSpan">
+						<div class="typing_loader"></div>
+					</div>
+				</div>
+			</div>
+			<!--排队模块-->
+			<div class="process-queue" style="display: none;">
+				<div class="wait-content">
+					<div class="clock">
+						<p id="Waiting-Duration">00:00</p>
+					</div>
+					<p class="text">
+						您的业务(<span id="productContent"></span>)正在受理中<br />
+						当前队列(<span id="queueId"></span>)人数：<span class="queue-user-no" id="queue-realtime-no">--</span>人 您排在第<span class="queue-user-no" id="queue-realtime-range">--</span>位
+					</p>
+				</div>
+				<button class="cancel-queue-button" data-toggle="modal" data-target="#cancle-queue-modal">结束排队</button>
+			</div>
+		</div>
+	</div>
+	<!--视频区域-->
+	<div id="Video" class="process-video" style="display: none;">
+		<!--座席视频画面-->
+		<div class="Agent-Area">
+			<img src="images/camera.png">
+			<div id="Agent-Area"></div>
+		</div>
+
+		<!--客户视频画面-->
+		<div class="Client-Area">
+			<img src="images/camera.png">
+			<div id="Client-Area"></div>
+		</div>
+
+
+		<div id="opacity-bg" class="TransBufferComponent hide"></div>
+		<div id="Question-Content" class="TransBufferComponent hide"></div>
+	</div>
+
+	<!--系统日志信息层-->
+	<div id="LOG_DIV_BODY">
+		<img src="images/left101.png" class="left">
+		<div id="LOG_DIV_TITLE" style="font-size: 18px"></div>
+		<div id="LOG_DIV_CONTENT"></div>
+	</div>
+	<!--操作等待层 -->
+	<div id="LOADING_DIV"><img src="./images/LoadImg.gif" alt="请等待..." style=" height:50px;" /></div>
+	<!--灰色背景透明层 -->
+	<div id="LOADING_GREY_DIV"></div>
+	<div id="video-call-refuse-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="VideoResultModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">视频呼叫回复</h4>
+				</div>
+				<div class="modal-body video-result-body">
+					<div class="form-group">
+						<div class="col-sm-12">
+							视频呼叫已被对方婉拒。
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="location.href='login.html'">确认</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="cancle-queue-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="VideoResultModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">取消排队</h4>
+				</div>
+				<div class="modal-body video-result-body">
+					<div class="form-group">
+						<div class="col-sm-12">
+							您是否确认取消排队？
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+					<button id="cancle-queue" type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div id="netClose-modal" class="modal fade" tabindex="-1" role="dialog" aria-labelledby="VideoResultModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h4 class="modal-title">系统提示</h4>
+				</div>
+				<div class="modal-body video-result-body">
+					<div class="form-group">
+						<div class="col-sm-12">
+							系统检测到您的网络中断!
+						</div>
+					</div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-primary" data-dismiss="modal" onclick="location.href='login.html'">确认</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script language="JavaScript" type="text/javascript" src="plugin/jquery-1.12.4.min.js" charset="UTF-8"></script>
+	<script language="JavaScript" type="text/javascript" src="plugin/bootstrap-3.3.7/js/bootstrap.min.js" charset="UTF-8"></script>
+	<script src="plugin/jquery.bootstrap.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/public.js" type="text/javascript" charset="utf-8"></script>
+	<script src="js/config.js" type="text/javascript" charset="utf-8"></script>
+	<script language="JavaScript" type="text/javascript" src="js/anychat4html5.js" charset="utf-8"></script>
+	<script language="JavaScript" type="text/javascript" src="js/anychatevent.js" charset="utf-8"></script>
+	<script language="JavaScript" type="text/javascript" src="js/anychatobject.js" charset="utf-8"></script>
+	<script language="JavaScript" type="text/javascript" src="js/anychatsdk.js" charset="utf-8"></script>
+	<script language="JavaScript" type="text/javascript" src="js/index.js" charset="utf-8"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <title>AnyChat H5客服</title>
+    <link type="text/css" rel="stylesheet" href="plugin/bootstrap-3.3.7/css/bootstrap.min.css" charset="UTF-8">
+    <link type="text/css" rel="stylesheet" href="css/style.css" charset="UTF-8">
+    <link rel="stylesheet" type="text/css" href="css/login.css"/>
+</head>
+<body>
+
+    <header class="header">
+        <h3>完成</h3>
+    </header>
+    <section class="container">
+        <article class="content">
+            <img src="images/thanks.png" class="thanks">
+            <p class="thankText" style="  margin-top: -58px;">感谢您对我们的支持</p>
+            <p class="thankText" style="  margin-top: -35px;">我们会更加努力做到更好</p>
+            <div class="thankText contant_top" style="  margin-top: 11px;">
+                <button class="btn btn-back">返回登录</button>
+            </div>
+            
+        </article>
+
+    </section>
+    
+<script language="JavaScript" type="text/javascript" src="plugin/jquery-1.12.4.min.js" charset="UTF-8"></script>
+<script src="js/public.js" type="text/javascript" charset="utf-8"></script>
+<script type="text/javascript">
+	(function(){
+		$(document).on("click",".btn-back",function(){
+			AnyChatH5.clearStep();
+			location.href="login.html";
+		})
+	})()
+</script>
+</body>
+</html>
