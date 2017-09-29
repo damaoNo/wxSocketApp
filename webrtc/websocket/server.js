@@ -33,7 +33,9 @@ var server = https.createServer({
                             res.writeHead(500);
                             res.end(err.toString());
                         }else{
-                            res.writeHead(200);
+                            res.writeHead(200, {
+                                'Content-Type': 'text/plain;charset=utf-8'
+                            });
                             res.end(content);
                         }
                     });
