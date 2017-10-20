@@ -36,7 +36,7 @@
 <div id="out"></div>
 <script>
     window.onerror = function (e, url, line) {
-        alert(`${e}\n${url}\n${line}`)
+        alert(`${e}\n${url}\n{line}`)
     };
     // 一堆兼容代码
     window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
@@ -61,7 +61,7 @@
         video: true,
         // video: { width: 1280, height: 720 }
         // video: { facingMode: "environment"}, // 或者 "user"
-    };
+    }
     var video = document.querySelector('video');
     // 成功回调
     function successFunc(stream) {
@@ -71,17 +71,36 @@
             video.src = window.URL && window.URL.createObjectURL(stream) || stream
         }
         video.pause();
-        window.stream = stream;
     }
     function errorFunc(err) {
         alert(err.name);
     }
+
+    let isPlay = false;
+    document.getElementById('play').onclick = function () {
+        if(isPlay){
+            video.pause();
+        }else{
+            video.play();
+        }
+        isPlay = !isPlay;
+    };
+    document.getElementById('luzhi').onclick = function () {
+
+    };
+    document.getElementById('jieshu').onclick = function () {
+
+    };
+
+    // 正式启动摄像头
+    navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
 
     var _token_ = 'rdsa213132131dfsaf';
     var url = 'wss://www.nodejser.site/?token=' + _token_;
     var _webSocket_ = new WebSocket(url);
     _webSocket_.onopen = function() {
         print('socket已连接');
+        callback && callback(_webSocket_, _suffix_, _token_);
     };
     _webSocket_.onmessage = function (data) {
         var res = JSON.parse(data.data);
@@ -103,27 +122,6 @@
     _webSocket_.onclose = function() {
         alert('socket已关闭');
     };
-
-    let isPlay = false;
-    document.getElementById('play').onclick = function () {
-        if(isPlay){
-            video.pause();
-        }else{
-            video.play();
-        }
-        isPlay = !isPlay;
-    };
-    document.getElementById('luzhi').onclick = function () {
-        _webSocket_.send(JSON.stringify({action: 'record start', token: _token_}));
-
-        print('MediaRecorder started');
-    };
-    document.getElementById('jieshu').onclick = function () {
-
-    };
-
-    // 正式启动摄像头
-    navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
 
     var $out = document.getElementById('out');
     function print(msg) {
