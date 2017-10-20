@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>H5开户 客服后台</title>
+    <link rel="stylesheet" href="./style.css" />
+    <style type="text/css">
+        [v-cloak]{
+            display: none;
+        }
+        .list{
+            border-bottom: 1px dotted #ccc;
+            border-collapse: collapse;
+        }
+    </style>
+</head>
+<body>
+<div id="container" v-cloak>
+    <h1>H5开户客服后台 - 双向实时视频</h1>
+    <p>浏览器环境： Firefox 29+, or Chrome 47+ with <strong>Enable experimental Web Platform features</strong> enabled from chrome://flags.</p>
+
+    <video id="userVideoPlayer"></video>
+
+    <div class="list">
+        <table width="100%">
+            <thead>
+                <tr>
+                    <th align="left">用户名</th>
+                    <th align="left">录制时间</th>
+                    <th>操作</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="data in socketData">
+                    <td align="left">{{data.user}}</td>
+                    <td align="left">{{data.time}}</td>
+                    <td align="center"><button @click="playVideo(data.video)">play</button></td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<script src="./vue2.0.min.js"></script>
+<script src="./admin-service-both-way.js"></script>
+</body>
+</html>

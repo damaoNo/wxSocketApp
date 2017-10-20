@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>MediaStream Recording</title>
+    <link rel="stylesheet" href="./style.css" />
+</head>
+
+<body>
+
+<div id="container">
+    <h1>开户视频实时录制DEMO</h1>
+    <p>浏览器环境： Firefox 29+, or Chrome 47+ with <strong>Enable experimental Web Platform features</strong> enabled from chrome://flags.</p>
+
+    <div class="video-wrap">
+        <video id="gum" autoplay muted></video>
+        <div class="mask face-mask"></div>
+        <div class="mask card1-mask"></div>
+        <div class="mask card2-mask"></div>
+    </div>
+    <div class="video-wrap">
+        <video id="recorded" autoplay></video>
+    </div>
+
+    <!--<div>-->
+        <!--<input id="tel" type="text" placeholder="请输入手机号">-->
+        <!--<br>-->
+        <!--<br>-->
+    <!--</div>-->
+    <div>
+        <button id="record">开始录制</button>
+        <button id="record_over" disabled>确认录制</button>
+        <button id="play" disabled>Play</button>
+        <button id="download" disabled>Download</button>
+    </div>
+    <hr>
+    <div>
+        <label><input type="radio" name="type" value="0">头像</label>
+        <label><input type="radio" name="type" value="1">身份证正面</label>
+        <label><input type="radio" name="type" value="2">身份证背面</label>
+        <br>
+        <br>
+        <button id="take_photo" disabled>确认拍照</button>
+        <br>
+        <br>
+        <canvas id="photoPaper" class="photo-paper" style="display: none"></canvas>
+        <img src="" alt="拍照后显示" id="viewImg">
+    </div>
+
+    <!--<a href="https://github.com/samdutton/simpl/blob/gh-pages/mediarecorder" title="View source for this page on GitHub" id="viewSource">View source on GitHub</a>-->
+</div>
+<script>
+    window.onerror = function (e, url, line) {
+        alert(`${e}\n${url}\n{line}`)
+    }
+</script>
+<script src="./main.js"></script>
+</body>
+</html>
