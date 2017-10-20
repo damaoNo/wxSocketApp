@@ -51,8 +51,8 @@
     <!--<a href="https://github.com/samdutton/simpl/blob/gh-pages/mediarecorder" title="View source for this page on GitHub" id="viewSource">View source on GitHub</a>-->
 </div>
 <script>
-    window.onerror = function (e) {
-        alert(e)
+    window.onerror = function (e, url, line) {
+        alert(`${e}\n${url}\n{line}`)
     }
 </script>
 <script src="./main.js"></script>
