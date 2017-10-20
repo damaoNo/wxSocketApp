@@ -43,6 +43,9 @@
 <video class="bg"></video>
 <div class="tips">调取摄像头只适用于安卓机，苹果机可使用全景画布作为替代方案，另：此方法必须使用 https</div>
 <script>
+    window.onerror = function (e, url, line) {
+        alert(`${e}\n${url}\n{line}`)
+    };
     // 一堆兼容代码
     window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
     if (navigator.mediaDevices === undefined) {
