@@ -13,50 +13,6 @@ app.get('/', function(req, res) {
     res.sendfile(__dirname + '/index.html');
 });
 
-app.get('/index_1', function(req, res) {
-    res.sendfile(__dirname + '/index_1.html');
-});
-
-app.get('/service-single-track', function(req, res) {
-    res.sendfile(__dirname + '/admin-service-single-track.html');
-});
-
-app.get('/admin-service-single-track.js', function(req, res) {
-    res.sendfile(__dirname + '/admin-service-single-track.js');
-});
-
-app.get('/service-both-way', function(req, res) {
-    res.sendfile(__dirname + '/admin-service-both-way.html');
-});
-
-app.get('/admin-service-both-way.js', function(req, res) {
-    res.sendfile(__dirname + '/admin-service-both-way.js');
-});
-
-app.get('/vue2.0.min.js', function(req, res) {
-    res.sendfile(__dirname + '/vue2.0.min.js');
-});
-
-app.get('/style.css', function(req, res) {
-    res.sendfile(__dirname + '/style.css');
-});
-
-app.get('/main.js', function(req, res) {
-    res.sendfile(__dirname + '/main.js');
-});
-
-app.get('/main_1.js', function(req, res) {
-    res.sendfile(__dirname + '/main_1.js');
-});
-
-app.get('/common.js', function(req, res) {
-    res.sendfile(__dirname + '/common.js');
-});
-
-app.get('/adapter-latest.js', function(req, res) {
-    res.sendfile(__dirname + '/adapter-latest.js');
-});
-
 app.use(function (req, res) {
     res.send('hello world!');
 });
