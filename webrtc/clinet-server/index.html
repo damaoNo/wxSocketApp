@@ -100,7 +100,6 @@
     var _webSocket_ = new WebSocket(url);
     _webSocket_.onopen = function() {
         print('socket已连接');
-        callback && callback(_webSocket_, _suffix_, _token_);
     };
     _webSocket_.onmessage = function (data) {
         var res = JSON.parse(data.data);
