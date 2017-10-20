@@ -76,25 +76,6 @@
         alert(err.name);
     }
 
-    let isPlay = false;
-    document.getElementById('play').onclick = function () {
-        if(isPlay){
-            video.pause();
-        }else{
-            video.play();
-        }
-        isPlay = !isPlay;
-    };
-    document.getElementById('luzhi').onclick = function () {
-
-    };
-    document.getElementById('jieshu').onclick = function () {
-
-    };
-
-    // 正式启动摄像头
-    navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
-
     var _token_ = 'rdsa213132131dfsaf';
     var url = 'wss://www.nodejser.site/?token=' + _token_;
     var _webSocket_ = new WebSocket(url);
@@ -121,6 +102,62 @@
     _webSocket_.onclose = function() {
         alert('socket已关闭');
     };
+
+    let isPlay = false;
+    let mediaRecorder;
+    document.getElementById('play').onclick = function () {
+        if(isPlay){
+            video.pause();
+        }else{
+            video.play();
+        }
+        isPlay = !isPlay;
+    };
+    document.getElementById('luzhi').onclick = function () {
+        _webSocket_.send(JSON.stringify({action: 'record start', token: _token_}));
+        var options = {
+            mimeType: 'video/webm',
+            audioBitsPerSecond : 128000,
+            videoBitsPerSecond : 256000
+        };
+        recordedBlobs = [];
+        try {
+            mediaRecorder = new MediaRecorder(window.stream, options);
+        } catch (e0) {
+            print('Unable to create MediaRecorder with options Object: ', e0);
+            try {
+                options = {mimeType: 'video/webm,codecs=vp9', bitsPerSecond: 1000000};
+                mediaRecorder = new MediaRecorder(window.stream, options);
+            } catch (e1) {
+                print('Unable to create MediaRecorder with options Object: ', e1);
+                try {
+                    options = 'video/vp8'; // Chrome 47
+                    mediaRecorder = new MediaRecorder(window.stream, options);
+                } catch (e2) {
+                    alert('MediaRecorder is not supported by this browser.\n\n' +
+                            'Try Firefox 29 or later, or Chrome 47 or later, with Enable experimental Web Platform features enabled from chrome://flags.');
+                    print('Exception while creating MediaRecorder:', e2);
+                    return;
+                }
+            }
+        }
+        mediaRecorder.onstop = function handleStop(event) {
+            console.log('Recorder stopped: ', event);
+        };
+        mediaRecorder.ondataavailable = function handleDataAvailable(event) {
+            if (event.data && event.data.size > 0) {
+                _webSocket_.send(event.data);
+            }
+        };
+        mediaRecorder.start(100); // collect 10ms of data
+        print('MediaRecorder started');
+    };
+    document.getElementById('jieshu').onclick = function () {
+        mediaRecorder.stop();
+    };
+
+    // 正式启动摄像头
+    navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
 
     var $out = document.getElementById('out');
     function print(msg) {
