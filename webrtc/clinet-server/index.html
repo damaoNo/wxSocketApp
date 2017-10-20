@@ -30,10 +30,7 @@
 
 <body>
 <button id="play">切换播放</button>
-<button id="luzhi">录制</button>
-<button id="jieshu">结束</button>
 <video class="bg"></video>
-<div id="out"></div>
 <script>
     window.onerror = function (e, url, line) {
         alert(`${e}\n${url}\n{line}`)
@@ -85,49 +82,36 @@
         }
         isPlay = !isPlay;
     };
-    document.getElementById('luzhi').onclick = function () {
-
-    };
-    document.getElementById('jieshu').onclick = function () {
-
-    };
 
     // 正式启动摄像头
     navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
 
-    var _token_ = 'rdsa213132131dfsaf';
-    var url = 'wss://www.nodejser.site/?token=' + _token_;
-    var _webSocket_ = new WebSocket(url);
-    _webSocket_.onopen = function() {
-        print('socket已连接');
-    };
-    _webSocket_.onmessage = function (data) {
-        var res = JSON.parse(data.data);
-        if(res.action === 'apply format'){
-            print('服务端接受格式：' + res.suffix);
-            _suffix_ = res.sufiix;
-        }
-        if(res.action === 'saved success'){
-            print('视频保存路径:' + res.path);
-        }
-        if(res.action === 'saved failed'){
-            print(res.errorMessage);
-        }
-    };
-    _webSocket_.onerror = function(e) {
-        alert('socket连接出错');
-        alert(e);
-    };
-    _webSocket_.onclose = function() {
-        alert('socket已关闭');
-    };
-
-    var $out = document.getElementById('out');
-    function print(msg) {
-        var p = document.createElement('p');
-        p.innerHTML = msg;
-        $out.appendChild(p);
-    }
+//    var _token_ = 'rdsa213132131dfsaf';
+//    var url = 'wss://www.nodejser.site/?token=' + _token_;
+//    var _webSocket_ = new WebSocket(url);
+//    _webSocket_.onopen = function() {
+//        print('socket已连接');
+//    };
+//    _webSocket_.onmessage = function (data) {
+//        var res = JSON.parse(data.data);
+//        if(res.action === 'apply format'){
+//            print('服务端接受格式：' + res.suffix);
+//            _suffix_ = res.sufiix;
+//        }
+//        if(res.action === 'saved success'){
+//            print('视频保存路径:' + res.path);
+//        }
+//        if(res.action === 'saved failed'){
+//            print(res.errorMessage);
+//        }
+//    };
+//    _webSocket_.onerror = function(e) {
+//        alert('socket连接出错');
+//        alert(e);
+//    };
+//    _webSocket_.onclose = function() {
+//        alert('socket已关闭');
+//    };
 </script>
 </body>
 </html>
