@@ -40,8 +40,8 @@
 </head>
 
 <body>
+<button id="play">切换播放</button>
 <video class="bg"></video>
-<div class="tips">调取摄像头只适用于安卓机，苹果机可使用全景画布作为替代方案，另：此方法必须使用 https</div>
 <script>
     window.onerror = function (e, url, line) {
         alert(`${e}\n${url}\n{line}`)
@@ -79,11 +79,21 @@
         } else {
             video.src = window.URL && window.URL.createObjectURL(stream) || stream
         }
-        video.play();
+        video.pause();
     }
     function errorFunc(err) {
         alert(err.name);
     }
+
+    let isPlay = false;
+    document.getElementById('play').onclick = function () {
+        if(isPlay){
+            video.pause();
+        }else{
+            video.play();
+        }
+        isPlay = !isPlay;
+    };
 
     // 正式启动摄像头
     navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
