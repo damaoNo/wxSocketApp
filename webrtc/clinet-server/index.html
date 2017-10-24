@@ -67,7 +67,7 @@
         } else {
             video.src = window.URL && window.URL.createObjectURL(stream) || stream
         }
-        video.pause();
+        video.play();
     }
     function errorFunc(err) {
         alert(err.name);
