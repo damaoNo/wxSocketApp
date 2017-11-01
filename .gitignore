@@ -41,3 +41,6 @@ server/config.js
 server/keys
 server/public/files/
 server/restart.sh
+
+videos_temp/
+videos/
