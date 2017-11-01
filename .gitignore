@@ -35,6 +35,9 @@ jspm_packages
 # Optional npm cache directory
 .npm
 
+logs/
+webrtcvideo001/
+
 # Optional REPL history
 .node_repl_history
 server/config.js
