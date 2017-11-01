@@ -80,6 +80,7 @@
     };
     // 如果检测到媒体流连接到本地，将其绑定到一个video标签上输出
     pc.onaddstream = function (event) {
+        print('收到远程视频流，开始视频了...');
         remoteVideo.src = window.URL && window.URL.createObjectURL(event.stream) || event.stream;
         console.log('*************************************');
         console.log(event.stream);
