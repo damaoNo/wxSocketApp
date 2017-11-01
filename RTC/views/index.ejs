@@ -86,9 +86,9 @@
         console.log(event.stream.addSourceBuffer);
         console.log(event.stream.getVideoTracks());
         if ("srcObject" in localVideo) {
-            remoteVideo.srcObject = stream
+            remoteVideo.srcObject = event.stream;
         } else {
-            remoteVideo.src = window.URL && window.URL.createObjectURL(event.stream) || event.stream
+            remoteVideo.src = window.URL && window.URL.createObjectURL(event.stream) || event.stream;
         }
     };
     // 发送offer和answer的函数，发送本地session描述
