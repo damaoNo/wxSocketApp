@@ -1,0 +1,180 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>双向视频DEMO</title>
+    <style>
+        video{
+            height: 240px;
+        }
+    </style>
+</head>
+<body>
+本地视频: <button id="localToggle">Fix</button>
+<br>
+<video id="localVideo" autoplay></video>
+<br>
+远程视频:
+<br>
+<video id="remoteVideo" autoplay></video>
+
+<script>
+    window.onerror = function (e, url, line) {
+        alert(`${e}\n${url}\n${line}`);
+    }
+    // 仅仅用于控制哪一端的浏览器发起offer，#号后面有值的一方发起
+    var isCaller = window.location.href.split('#')[1];
+    // 与信令服务器的WebSocket连接
+    var socket = new WebSocket("wss://172.30.68.54:3001");
+    var localVideo = document.getElementById('localVideo');
+    var remoteVideo = document.getElementById('remoteVideo');
+    // stun和turn服务器
+    var iceServer = {
+        "iceServers": [{
+            "url": "stun:stun.l.google.com:19302"
+        }, {
+            "url": "turn:numb.viagenie.ca",
+            "username": "webrtc@live.com",
+            "credential": "muazkh"
+        }]
+    };
+
+    var RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
+    // 创建PeerConnection实例 (参数为null则没有iceserver，即使没有stunserver和turnserver，仍可在局域网下通讯)
+    var pc = new RTCPeer({});
+    // 发送ICE候选到其他客户端
+    pc.onicecandidate = function (event) {
+        if (event.candidate !== null) {
+            socket.send(JSON.stringify({
+                "event": "_ice_candidate",
+                "data": {
+                    "candidate": event.candidate
+                }
+            }));
+        }
+    };
+    // 如果检测到媒体流连接到本地，将其绑定到一个video标签上输出
+    pc.onaddstream = function (event) {
+        remoteVideo.src = window.URL && window.URL.createObjectURL(event.stream) || event.stream;
+        console.log('*************************************');
+        console.log(event.stream);
+        console.log(event.stream.addSourceBuffer);
+        console.log(event.stream.getVideoTracks());
+    };
+    // 发送offer和answer的函数，发送本地session描述
+    var sendOfferFn = function (desc) {
+                pc.setLocalDescription(desc);
+                socket.send(JSON.stringify({
+                    "event": "_offer",
+                    "data": {
+                        "sdp": desc
+                    }
+                }));
+            },
+            sendAnswerFn = function (desc) {
+                pc.setLocalDescription(desc);
+                socket.send(JSON.stringify({
+                    "event": "_answer",
+                    "data": {
+                        "sdp": desc
+                    }
+                }));
+            };
+
+    // 获取本地音频和视频流
+    if(navigator.webkitGetUserMedia){
+        navigator.webkitGetUserMedia({
+            "audio": false,
+            "video": true
+        }, function (stream) {
+            //绑定本地媒体流到video标签用于输出
+            localVideo.src = window.URL && window.URL.createObjectURL(stream) || stream;
+            localVideo.play();
+            //向PeerConnection中加入需要发送的流
+            pc.addStream(stream);
+            //如果是发起方则发送一个offer信令
+            if (isCaller) {
+                pc.createOffer(sendOfferFn, function (error) {
+                    console.log('Failure callback: ' + error);
+                });
+            }
+        }, function (error) {
+            //处理媒体流创建失败错误
+            console.log('getUserMedia error: ' + error);
+        });
+    }else{
+        alert('IOS: true');
+        var mediaOpts = {
+            audio: false,
+            video: { facingMode: 'user'} // 或者 "user：前置"
+        };
+        // 一堆兼容代码
+        window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
+        if (navigator.mediaDevices === undefined) {
+            navigator.mediaDevices = {};
+        }
+        if (navigator.mediaDevices.getUserMedia === undefined) {
+            navigator.mediaDevices.getUserMedia = function(constraints) {
+                var getUserMedia = navigator.webkitGetUserMedia || navigator.mozGetUserMedia;
+                if (!getUserMedia) {
+                    return Promise.reject(new Error('getUserMedia is not implemented in this browser'));
+                }
+                return new Promise(function(resolve, reject) {
+                    getUserMedia.call(navigator, constraints, resolve, reject);
+                });
+            }
+        }
+        startVideo(mediaOpts);
+        function startVideo(mediaOpts) {
+            // 正式启动摄像头
+            navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
+        }
+        // 成功回调
+        function successFunc(stream) {
+            if ("srcObject" in localVideo) {
+                localVideo.srcObject = stream
+            } else {
+                localVideo.src = window.URL && window.URL.createObjectURL(stream) || stream
+            }
+        }
+        function errorFunc(err) {
+            alert(err.name);
+        }
+    }
+    var isPlay = true;
+    document.getElementById('localToggle').onclick = function () {
+        if(isPlay){
+            localVideo.pause();
+        }else{
+            localVideo.play();
+        }
+        isPlay = !isPlay;
+    };
+
+    //处理到来的信令
+    socket.onmessage = function (event) {
+        var json = JSON.parse(event.data);
+        console.log('onmessage: ', json);
+        //如果是一个ICE的候选，则将其加入到PeerConnection中，否则设定对方的session描述为传递过来的描述
+        if (json.event === "_ice_candidate") {
+            pc.addIceCandidate(new RTCIceCandidate(json.data.candidate));
+        } else {
+            pc.setRemoteDescription(new RTCSessionDescription(json.data.sdp));
+            // 如果是一个offer，那么需要回复一个answer
+            if (json.event === "_offer") {
+                pc.createAnswer(sendAnswerFn, function (error) {
+                    console.log('Failure callback: ' + error);
+                });
+            }
+        }
+    };
+    socket.onerror = function(e) {
+        alert('socket连接出错');
+        alert(JSON.stringify(e));
+    };
+    socket.onclose = function() {
+        alert('socket已关闭');
+    };
+</script>
+</body>
+</html>

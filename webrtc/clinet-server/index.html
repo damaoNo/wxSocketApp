@@ -17,50 +17,72 @@
             width: 100%;
             background: #000;
         }
-        #out{
-            height: 400px;
-            overflow: auto;
-        }
-        #out p{
-            margin: 0;
-            font-size: 12px;
-        }
     </style>
 </head>
 
 <body>
-<button id="play">切换播放</button>
+<button id="play">暂停</button>
+<button id="switch">切换前后置摄像头</button>
 <video class="bg" autoplay></video>
 <script>
     window.onerror = function (e, url, line) {
         alert(`${e}\n${url}\n{line}`)
     };
-
-
     var video = document.querySelector('video');
-    var exArray = []; //存储设备源ID
-    MediaStreamTrack.getSources(function (sourceInfos) {
-        for (var i = 0; i != sourceInfos.length; ++i) {
-            var sourceInfo = sourceInfos[i];
-            //这里会遍历audio,video，所以要加以区分
-            if (sourceInfo.kind === 'video') {
-                exArray.push(sourceInfo.id);
+    var playBtn = document.querySelector('play');
+    var switchBtn = document.querySelector('switch');
+    var isPlay = true;
+    if(MediaStreamTrack && MediaStreamTrack.getSources){
+        var exArray = []; //存储设备源ID
+        var mode = 0;
+        MediaStreamTrack.getSources(function (sourceInfos) {
+            for (var i = 0; i != sourceInfos.length; ++i) {
+                var sourceInfo = sourceInfos[i];
+                if (sourceInfo.kind === 'video') {
+                    exArray.push(sourceInfo.id);
+                }
             }
-        }
-
-        // 配置设置
+            var mediaOpts = {
+                audio: false,
+                'video': {
+                    'optional': [{
+                        'sourceId': exArray[mode] //0为前置摄像头，1为后置
+                    }]
+                }
+            };
+            startVideo(mediaOpts);
+        });
+        switchBtn.onclick = function () {
+            mode = 1^mode;
+            var mediaOpts = {
+                audio: false,
+                'video': {
+                    'optional': [{
+                        'sourceId': exArray[mode]
+                    }]
+                }
+            };
+            startVideo(mediaOpts);
+        };
+    }else{
+        var _mode = 0;
+        var type = ['user', 'environment'];
         var mediaOpts = {
             audio: false,
-            //video: true,
-            // video: { width: 1280, height: 720 }
-            //video: { facingMode: "environment"}, // 或者 "user"
-            'video': {
-                'optional': [{
-                    'sourceId': exArray[1] //0为前置摄像头，1为后置
-                }]
-            }
+            video: { facingMode: type[_mode]} // 或者 "user：前置"
         };
+        startVideo(mediaOpts);
+        switchBtn.onclick = function () {
+            _mode = 1^_mode;
+            var mediaOpts = {
+                audio: false,
+                video: { facingMode: type[_mode]}
+            };
+            startVideo(mediaOpts);
+        };
+    }
 
+    function startVideo(mediaOpts) {
         // 一堆兼容代码
         window.URL = (window.URL || window.webkitURL || window.mozURL || window.msURL);
         if (navigator.mediaDevices === undefined) {
@@ -77,12 +99,17 @@
                 });
             }
         }
-
-
         // 正式启动摄像头
         navigator.mediaDevices.getUserMedia(mediaOpts).then(successFunc).catch(errorFunc);
-    });
-
+        playBtn.onclick = function () {
+            if(isPlay){
+                video.pause();
+            }else{
+                video.play();
+            }
+            isPlay = !isPlay;
+        };
+    }
 
     // 成功回调
     function successFunc(stream) {
@@ -96,43 +123,6 @@
     function errorFunc(err) {
         alert(err.name);
     }
-
-    let isPlay = false;
-    document.getElementById('play').onclick = function () {
-        if(isPlay){
-            video.pause();
-        }else{
-            video.play();
-        }
-        isPlay = !isPlay;
-    };
-
-//    var _token_ = 'rdsa213132131dfsaf';
-//    var url = 'wss://www.nodejser.site/?token=' + _token_;
-//    var _webSocket_ = new WebSocket(url);
-//    _webSocket_.onopen = function() {
-//        print('socket已连接');
-//    };
-//    _webSocket_.onmessage = function (data) {
-//        var res = JSON.parse(data.data);
-//        if(res.action === 'apply format'){
-//            print('服务端接受格式：' + res.suffix);
-//            _suffix_ = res.sufiix;
-//        }
-//        if(res.action === 'saved success'){
-//            print('视频保存路径:' + res.path);
-//        }
-//        if(res.action === 'saved failed'){
-//            print(res.errorMessage);
-//        }
-//    };
-//    _webSocket_.onerror = function(e) {
-//        alert('socket连接出错');
-//        alert(e);
-//    };
-//    _webSocket_.onclose = function() {
-//        alert('socket已关闭');
-//    };
 </script>
 </body>
 </html>
