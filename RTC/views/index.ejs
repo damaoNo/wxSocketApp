@@ -120,7 +120,7 @@
             if (isCaller) {
                 print('发起双向视频请求：');
                 pc.createOffer(sendOfferFn, function (error) {
-                    console.log('Failure callback: ' + error);
+                    print('sendOffer failure callback: ' + error);
                 });
             }
         }, function (error) {
@@ -164,7 +164,7 @@
             if (isCaller) {
                 print('发起双向视频请求：');
                 pc.createOffer(sendOfferFn, function (error) {
-                    console.log('Failure callback: ' + error);
+                    print('sendOffer failure callback: ' + error);
                 });
             }
         }
@@ -195,7 +195,7 @@
             // 如果是一个offer，那么需要回复一个answer
             if (json.event === "_offer") {
                 pc.createAnswer(sendAnswerFn, function (error) {
-                    console.log('Failure callback: ' + error);
+                    print('Answer failure callback: ' + error);
                 });
             }
         }
