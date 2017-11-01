@@ -48,6 +48,7 @@
     }
     // 仅仅用于控制哪一端的浏览器发起offer，#号后面有值的一方发起
     var isCaller = window.location.href.split('#')[1];
+    print('是否为呼叫方：' + isCaller);
     // 与信令服务器的WebSocket连接
     var socket = new WebSocket("wss://www.nodejser.site:3001");
     var localVideo = document.getElementById('localVideo');
@@ -117,6 +118,7 @@
             pc.addStream(stream);
             //如果是发起方则发送一个offer信令
             if (isCaller) {
+                print('发起双向视频请求：');
                 pc.createOffer(sendOfferFn, function (error) {
                     console.log('Failure callback: ' + error);
                 });
@@ -157,6 +159,13 @@
                 localVideo.srcObject = stream
             } else {
                 localVideo.src = window.URL && window.URL.createObjectURL(stream) || stream
+            }
+            //如果是发起方则发送一个offer信令
+            if (isCaller) {
+                print('发起双向视频请求：');
+                pc.createOffer(sendOfferFn, function (error) {
+                    console.log('Failure callback: ' + error);
+                });
             }
         }
         function errorFunc(err) {
