@@ -7,25 +7,49 @@
         video{
             height: 240px;
         }
+        .out{
+            width: 40%;
+            height: auto;
+            position: absolute;
+            right: 0;
+            top: 0;
+            border: 1px dotted #ccc;
+            background: #fff;
+        }
+        .out h5,
+        .out p{
+            font-size: 12px;
+            margin: 0;
+        }
     </style>
 </head>
 <body>
-本地视频: <button id="localToggle">Fix</button>
+本地视频:
+<button id="localToggle" style="display: none">toggle</button>
 <br>
-<video id="localVideo" autoplay></video>
+<video id="localVideo" autoplay playsinline="playsinline"></video>
 <br>
 远程视频:
 <br>
-<video id="remoteVideo" autoplay></video>
-
+<video id="remoteVideo" autoplay playsinline="playsinline"></video>
+<div class="out" id="out">
+    <h5>日志输出：</h5>
+    <div id="print"></div>
+</div>
 <script>
     window.onerror = function (e, url, line) {
         alert(`${e}\n${url}\n${line}`);
     }
+
+    function print(msg) {
+        var p = document.createElement('p');
+        p.innerHTML = msg;
+        document.getElementById('print').appendChild(p);
+    }
     // 仅仅用于控制哪一端的浏览器发起offer，#号后面有值的一方发起
     var isCaller = window.location.href.split('#')[1];
     // 与信令服务器的WebSocket连接
-    var socket = new WebSocket("wss://www.nodejser.site:3001");
+    var socket = new WebSocket("wss://172.30.68.54:3001");
     var localVideo = document.getElementById('localVideo');
     var remoteVideo = document.getElementById('remoteVideo');
     // stun和turn服务器
@@ -89,7 +113,6 @@
         }, function (stream) {
             //绑定本地媒体流到video标签用于输出
             localVideo.src = window.URL && window.URL.createObjectURL(stream) || stream;
-            localVideo.play();
             //向PeerConnection中加入需要发送的流
             pc.addStream(stream);
             //如果是发起方则发送一个offer信令
@@ -103,7 +126,6 @@
             console.log('getUserMedia error: ' + error);
         });
     }else{
-        alert('IOS: true');
         var mediaOpts = {
             audio: false,
             video: { facingMode: 'user'} // 或者 "user：前置"
@@ -141,15 +163,16 @@
             alert(err.name);
         }
     }
-    var isPlay = true;
-    document.getElementById('localToggle').onclick = function () {
+    var isPlay = false;
+    document.getElementById('localToggle').onclick = togglePlay;
+    function togglePlay() {
         if(isPlay){
             localVideo.pause();
         }else{
             localVideo.play();
         }
         isPlay = !isPlay;
-    };
+    }
 
     //处理到来的信令
     socket.onmessage = function (event) {
@@ -169,14 +192,14 @@
         }
     };
     socket.onopen = function() {
-        alert('socket已连接');
+        print('socket已连接!');
     };
     socket.onerror = function(e) {
-        alert('socket连接出错');
-        alert(JSON.stringify(e));
+        print('socket连接出错!');
+        print(JSON.stringify(e));
     };
     socket.onclose = function() {
-        alert('socket已关闭');
+        print('socket已关闭!');
     };
 </script>
 </body>
