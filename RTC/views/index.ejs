@@ -48,7 +48,7 @@
     }
     // 仅仅用于控制哪一端的浏览器发起offer，#号后面有值的一方发起
     var isCaller = window.location.href.split('#')[1];
-    print('是否为呼叫方：' + isCaller);
+    print('是否为呼叫方：' + !!isCaller);
     // 与信令服务器的WebSocket连接
     var socket = new WebSocket("wss://www.nodejser.site:3001");
     var localVideo = document.getElementById('localVideo');
@@ -118,7 +118,7 @@
             pc.addStream(stream);
             //如果是发起方则发送一个offer信令
             if (isCaller) {
-                print('发起双向视频请求：');
+                print('发起双向视频请求...');
                 pc.createOffer(sendOfferFn, function (error) {
                     print('sendOffer failure callback: ' + error);
                 });
@@ -162,14 +162,14 @@
             }
             //如果是发起方则发送一个offer信令
             if (isCaller) {
-                print('发起双向视频请求：');
+                print('发起双向视频请求...');
                 pc.createOffer(sendOfferFn, function (error) {
                     print('sendOffer failure callback: ' + error);
                 });
             }
         }
         function errorFunc(err) {
-            alert(err.name);
+            print(err.name);
         }
     }
     var isPlay = false;
@@ -186,7 +186,7 @@
     //处理到来的信令
     socket.onmessage = function (event) {
         var json = JSON.parse(event.data);
-        console.log('onmessage: ', json);
+        print('onmessage: ', json.event);
         //如果是一个ICE的候选，则将其加入到PeerConnection中，否则设定对方的session描述为传递过来的描述
         if (json.event === "_ice_candidate") {
             pc.addIceCandidate(new RTCIceCandidate(json.data.candidate));
