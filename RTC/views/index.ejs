@@ -89,7 +89,7 @@
     // 发送offer和answer的函数，发送本地session描述
     var sendOfferFn = function (desc) {
                 pc.setLocalDescription(desc);
-                print('SDP:' + JSON.stringify(desc));
+                print('offer sdp:' + JSON.stringify(desc));
                 socket.send(JSON.stringify({
                     "event": "_offer",
                     "data": {
@@ -99,6 +99,7 @@
             },
             sendAnswerFn = function (desc) {
                 pc.setLocalDescription(desc);
+                print('answer sdp:' + JSON.stringify(desc));
                 socket.send(JSON.stringify({
                     "event": "_answer",
                     "data": {
@@ -195,6 +196,7 @@
             pc.setRemoteDescription(new RTCSessionDescription(json.data.sdp));
             // 如果是一个offer，那么需要回复一个answer
             if (json.event === "_offer") {
+                print('收到视频请求，发送回应');
                 pc.createAnswer(sendAnswerFn, function (error) {
                     print('Answer failure callback: ' + error);
                 });
