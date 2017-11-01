@@ -130,7 +130,11 @@
         "audio": false,
         "video": true
     }).then(function successFunc(stream) {
-        localVideo.src = window.URL && window.URL.createObjectURL(stream) || stream;
+        if ("srcObject" in localVideo) {
+            localVideo.srcObject = stream
+        } else {
+            localVideo.src = window.URL && window.URL.createObjectURL(stream) || stream
+        }
         //向PeerConnection中加入需要发送的流
         print('向PeerConnection中加入需要发送的流...');
         pc.addStream(stream);
