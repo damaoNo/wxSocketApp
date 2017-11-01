@@ -89,7 +89,7 @@
     // 发送offer和answer的函数，发送本地session描述
     var sendOfferFn = function (desc) {
                 pc.setLocalDescription(desc);
-                print('SDP:' + desc);
+                print('SDP:' + JSON.stringify(desc));
                 socket.send(JSON.stringify({
                     "event": "_offer",
                     "data": {
