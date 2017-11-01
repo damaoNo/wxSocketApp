@@ -186,7 +186,7 @@
     //处理到来的信令
     socket.onmessage = function (event) {
         var json = JSON.parse(event.data);
-        print('onmessage: ', json.event);
+        print('onmessage: ' + json.event);
         //如果是一个ICE的候选，则将其加入到PeerConnection中，否则设定对方的session描述为传递过来的描述
         if (json.event === "_ice_candidate") {
             pc.addIceCandidate(new RTCIceCandidate(json.data.candidate));
