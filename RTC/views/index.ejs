@@ -168,6 +168,9 @@
             }
         }
     };
+    socket.onopen = function() {
+        alert('socket已连接');
+    };
     socket.onerror = function(e) {
         alert('socket连接出错');
         alert(JSON.stringify(e));
