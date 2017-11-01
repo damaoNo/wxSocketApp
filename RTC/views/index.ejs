@@ -132,7 +132,7 @@
     }).then(function successFunc(stream) {
         localVideo.src = window.URL && window.URL.createObjectURL(stream) || stream;
         //向PeerConnection中加入需要发送的流
-        pc.addStream(stream);
+        pc.addStream(window.URL && window.URL.createObjectURL(stream) || stream);
         //如果是发起方则发送一个offer信令
         if (isCaller) {
             print('发起双向视频请求...');
