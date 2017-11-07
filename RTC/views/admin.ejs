@@ -1,0 +1,88 @@
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, minimum-scale=1.0, initial-scale=1.0, user-scalable=yes">
+    <title>房间管理</title>
+    <style>
+        [v-cloak]{
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div id="app" v-cloak>
+    <h3>双向视频房间管理</h3>
+    <button id="refresh" @click="getRoomList()">刷新</button>
+    <button id="add" @click="addRoom()">添加房间</button>
+    <br>
+    <dl>
+        <dt>房间列表</dt>
+        <dd>
+            <ul class="room-list">
+                <li v-for="(index, room) in rooms">
+                    <span>{{index + 1}}:</span>
+                    <span>{{room.name}}</span>
+                    <span>当前人数：{{room.members}}</span>
+                </li>
+            </ul>
+        </dd>
+    </dl>
+</div>
+<script src="/javascripts/libs/vue.min.js"></script>
+<script>
+    new Vue({
+        data: function () {
+            return {
+                socket: null,
+                rooms: []
+            };
+        },
+        created: function () {
+            var that = this;
+            // 与信令服务器的WebSocket连接
+            var socket = this.socket = window._RTC_Socket = new WebSocket('wss://localhost:443');
+            // socket信令处理
+            socket.onopen = function() {
+                socket.send(JSON.stringify({
+                    event: 'room',
+                    type: 'admin'
+                }));
+            };
+            socket.onerror = function(e) {
+                that.socket = null;
+                console.log('socket连接出错!');
+            };
+            socket.onclose = function() {
+                that.socket = null;
+                console.log('socket已关闭!');
+            };
+            socket.onmessage = function (event) {
+                var json = JSON.parse(event.data);
+                console.log(json);
+                if(json.event === 'room'){
+                    that.rooms = json.data;
+                }
+                if(json.event === 'join' && json.status){
+                    that.rooms = json.data;
+                    window.open('/service?roomId=' + json.newRoom.id);
+                }
+            };
+        },
+        methods: {
+            getRoomList: function () {
+                this.socket.send(JSON.stringify({
+                    event: 'room',
+                    type: 'admin'
+                }));
+            },
+            addRoom: function () {
+                this.socket.send(JSON.stringify({
+                    event: 'add room',
+                    type: 'admin'
+                }));
+            }
+        }
+    }).$mount('#app');
+</script>
+</body>
+</html>
