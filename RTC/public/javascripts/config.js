@@ -5,27 +5,34 @@
 module.exports = function (env) {
 
     'use strict';
-    
+
+    var videoOptions = {
+	mimeType: 'video/webm\;codecs=h264',
+	audioBitsPerSecond : 128000,
+	videoBitsPerSecond : 256000
+    };
     var config = {
 	'dev': {
 	    env: 'dev',
-	    wsServer: 'wss://localhost:443',
+	    wsServer: 'wss://www.nodejser.site:443',
 	    iceServer: {
 		//开发环境为空，局域网可以不需要穿墙
 	    },
+	    videoOptions: videoOptions,
 	    logger: true
 	},
 	'test': {
 	    env: 'test',
-	    wsServer: 'wss://www.nodejser.site:3001',
+	    wsServer: 'wss://ceshi.securities.eastmoney.com',
 	    iceServer: {
 
 	    },
+	    videoOptions: videoOptions,
 	    logger: true
 	},
 	'prd': {
 	    env: 'prd',
-	    wsServer: 'wss://localhost:3001',
+	    wsServer: 'wss://ceshi.securities.eastmoney.com',
 	    iceServer: {
 		"iceServers": [{
 		    "url": "stun:stun.l.google.com:19302"
@@ -35,6 +42,7 @@ module.exports = function (env) {
 		    "credential": "muazkh"
 		}]
 	    },
+	    videoOptions: videoOptions,
 	    logger: false
 	}
     };

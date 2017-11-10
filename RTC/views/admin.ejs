@@ -13,7 +13,6 @@
 <div id="app" v-cloak>
     <h3>双向视频房间管理</h3>
     <button id="refresh" @click="getRoomList()">刷新</button>
-    <button id="add" @click="addRoom()">添加房间</button>
     <br>
     <dl>
         <dt>房间列表</dt>
@@ -22,7 +21,6 @@
                 <li v-for="(index, room) in rooms">
                     <span>{{index + 1}}:</span>
                     <span>{{room.name}}</span>
-                    <span>当前人数：{{room.members}}</span>
                 </li>
             </ul>
         </dd>
@@ -40,13 +38,14 @@
         created: function () {
             var that = this;
             // 与信令服务器的WebSocket连接
-            var socket = this.socket = window._RTC_Socket = new WebSocket('wss://localhost:443');
+            var socket = this.socket = window._RTC_Socket = new WebSocket('wss://www.nodejser.site:443');
             // socket信令处理
             socket.onopen = function() {
                 socket.send(JSON.stringify({
-                    event: 'room',
+                    event: 'ping',
                     type: 'admin'
                 }));
+                that.getRoomList();
             };
             socket.onerror = function(e) {
                 that.socket = null;
@@ -62,9 +61,12 @@
                 if(json.event === 'room'){
                     that.rooms = json.data;
                 }
-                if(json.event === 'join' && json.status){
-                    that.rooms = json.data;
-                    window.open('/service?roomId=' + json.newRoom.id);
+                if(json.event === 'create room'){
+                    that.rooms = json.rooms;
+                    window.open('/service?roomId=' + json.newRoom.id + '#service', '_blank');
+                }
+                if(json.event === 'room close'){
+                    that.getRoomList();
                 }
             };
         },
@@ -72,12 +74,6 @@
             getRoomList: function () {
                 this.socket.send(JSON.stringify({
                     event: 'room',
-                    type: 'admin'
-                }));
-            },
-            addRoom: function () {
-                this.socket.send(JSON.stringify({
-                    event: 'add room',
                     type: 'admin'
                 }));
             }

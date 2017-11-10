@@ -5,41 +5,20 @@
 var RTC = require('./webrtc');
 var util = require('./util');
 var btnRecord,
-    btnRecordOver,
-    btnApply;
-
-RTC.ready(function (socket, startWebRtc) {
-    btnEnter = document.getElementById('btn-enter');
-    btnReady = document.getElementById('btn-ready');
+    btnRecordOver;
+var btnEnter = document.getElementById('btn-enter');
     btnRecord = document.getElementById('btn-record');
     btnRecordOver = document.getElementById('btn-record-over');
-    // btnApply = document.getElementById('btn-apply');
 
-    var originData = util.parseUrl(window.location.href);
-    var isCustomer = originData.hash === 'customer';
-    var isCaller = originData.hash === 'user';
-    if(isCaller){
-	btnEnter.disabled = true;
-	btnReady.disabled = false;
-    }
-
+RTC.ready(function (socket) {
     //进入房间
     btnEnter.onclick = function () {
-	console.log(isCustomer);
-	if(isCustomer){
-	    console.log('发送：创建房间');
-	    socket.send(JSON.stringify({
-		event: 'add room',
-		type: 'customer'
-	    }));
-	}
-    };
-    //准备
-    btnReady.onclick = function () {
-	btnEnter.disabled = true;
-	btnReady.disabled = true;
+	console.log('发送：创建房间');
+	socket.send(JSON.stringify({
+	    event: 'add room',
+	    type: 'customer'
+	}));
 	btnRecord.disabled = false;
-	startWebRtc && startWebRtc();
     };
 
     //开始录制
@@ -49,34 +28,29 @@ RTC.ready(function (socket, startWebRtc) {
 	btnRecordOver.disabled = false;
 	socket.send(JSON.stringify({
 	    event: 'record start',
-	    type: 'user'
+	    type: 'customer',
+	    roomId: window._RTC_ROOMID
 	}));
     };
     //结束录制
     btnRecordOver.onclick = function () {
 	console.log('发送：请求录制结束');
 	btnRecord.disabled = false;
-	// btnApply.disabled = false;
 	btnRecordOver.disabled = true;
 	socket.send(JSON.stringify({
 	    event: 'record over',
-	    type: 'user'
+	    type: 'customer',
+	    roomId: window._RTC_ROOMID
 	}));
     };
-    //确认
-    // btnApply.onclick = function () {
-	// console.log('发送：请求录制确认');
-	// btnApply.disabled = true;
-	// btnRecord.disabled = false;
-	// socket.send(JSON.stringify({
-	//     event: 'record apply',
-	//     type: 'user'
-	// }));
-    // };
-}, function (roomInfo) {
-    //获取房间信息，如果获取到roomId则进入房间
-    console.log('房间信息：', roomInfo);
-    if(roomInfo){
-    	window.location.href = '/user?roomId=' + roomInfo.id + '#user';
+}, function (startWebRtc, roomId) {
+    var originData = util.parseUrl(window.location.href);
+    var isCustomer = originData.hash === 'customer';
+    if(isCustomer){
+	btnEnter.disabled = true;
     }
+    startWebRtc && startWebRtc(true, roomId);
+}, function () {
+    alert('当前队列已满，请走正常开户通道！');
+    //todo
 });

@@ -22,11 +22,11 @@ module.exports = function (sslServer) {
     //定义消息广播
     wss.broadcastToUsers = function broadcast(message) {
 	wss.clients.forEach(function each(client) {
-	    if (client.readyState === WebSocket.OPEN && client.type === 'user') {
+	    if (client.readyState === WebSocket.OPEN && client.type === 'customer') {
 		console.log(`广播客服消息给用户: ${client.uuid}`);
 		client.send(message, function (error) {
 		    if (error) {
-			console.log(`broadcast to user ${client.uuid} message error：'`, error);
+			console.log(`broadcast to customer ${client.uuid} message error：'`, error);
 		    }
 		});
 	    }
@@ -58,6 +58,26 @@ module.exports = function (sslServer) {
 	    //普通信令
 	    if(typeof message === 'string'){
 		var json = JSON.parse(message);
+		//通过ping完成身份的确认和加入房间
+		if(json.event === 'ping'){
+		    newConnector.type = json.type;
+		    if(json.type === 'admin'){
+			Room.setAdmin(newConnector);
+		    }
+		    if(json.type === 'service'){
+			record = new Record(ws);
+		    }
+		    if(json.roomId){
+			newConnector.roomId = json.roomId;
+			Room.addService(json.roomId, newConnector);
+		    }
+		    sendMessage(ws, JSON.stringify({
+			event: 'ping',
+			type: json.type,
+			roomId: json.roomId
+		    }));
+		}
+		
 		if(json.event === 'room'){
 		    let data = {
 			event: 'room',
@@ -75,61 +95,70 @@ module.exports = function (sslServer) {
 		}
 
 		if(json.event === 'add room' && json.type === 'customer'){
-		    var newRoom = Room.createRoom();
-		    let _data = {
-			event: 'join',
-			data: newRoom,
-			status: true
-		    };
-		    console.log(JSON.stringify(_data));
-		    console.log('start https://localhost:3000/service?roomId=' + newRoom.id + '#service');
-		    Sh.exec('start https://localhost:3000/service?roomId=' + newRoom.id + '#service', function (code) {
-			console.log('打开浏览器，exit code:', code);
-			sendMessage(ws, JSON.stringify(_data));
-		    });
-		}
-
-		//通过ping完成身份的确认和加入房间
-		if(json.event === 'ping'){
-		    newConnector.type = json.type;
-		    newConnector.roomId = json.roomId;
-		    Room.addUser(json.roomId, newConnector);
-		    //Room.setCurrentUser(json.roomId, newConnector, json.type);
-		    sendMessage(ws, JSON.stringify({
-			event: 'ping',
-			type: json.type
-		    }));
-		    if(json.type === 'service'){
-			record = new Record(ws);
+		    var rooms = Room.getAll();
+		    console.log('--------------------------------');
+		    console.log('当前房间数量：', rooms.length);
+		    console.log('--------------------------------');
+		    if(rooms.length > 2){
+			sendMessage(newConnector.ws, JSON.stringify({
+			    event: 'full'
+			}));
+		    }else{
+			var newRoom = Room.createRoom(newConnector);
+			var admin = Room.getAdmin();
+			admin && sendMessage(admin.ws, JSON.stringify({
+			    event: 'create room',
+			    rooms: Room.getAll(),
+			    newRoom: newRoom
+			}));
+			newConnector.roomId = newRoom.id;
 		    }
 		}
 
-		var room = Room.getRoom(newConnector.roomId);
+		if(json.event === 'service ready' && json.type === 'service'){
+		    let room = Room.getRoom(json.roomId);
+		    //即让当前连接进入对应房间
+		    room && sendMessage(room.currentUser.ws, JSON.stringify({
+			event: 'join',
+			roomId: json.roomId
+		    }));
+		}
+
 		//视频发起方的请求视频
-		if(json.event === '_offer' && json.caller === 'true'){
+		if(json.event === '_offer'){
+		    console.log('收到_offer??');
+		    console.log('roomId:', json.roomId);
+		    let room = Room.getRoom(json.roomId);
 		    if(room && room.service){
 			sendMessage(room.service.ws, message);
 		    }
 		}
-		//客服广播响应
+		//客服响应
 		if(json.event === '_answer'){
+		    console.log('收到_answer??');
+		    console.log('roomId:', json.roomId);
+		    let room = Room.getRoom(json.roomId);
 		    if(room && room.currentUser){
 			sendMessage(room.currentUser.ws, message);
 		    }
 		}
 		//ICE候选
-		if(json.event === '_ice_candidate' && room){
+		if(json.event === '_ice_candidate'){
+		    console.log('收到_ice_candidate?? 身份：', json._ice_candidate_type);
+		    console.log('roomId:', json.roomId);
+		    let room = Room.getRoom(json.roomId);
 		    if(newConnector.type === 'service' && room.currentUser){
 			sendMessage(room.currentUser.ws, message);
 		    }
-		    if(newConnector.type === 'user' && room.service){
+		    if(newConnector.type === 'customer' && room.service){
 			sendMessage(room.service.ws, message);
 		    }
 		}
 		//视频流录制
 		if(json.event === 'record start'){
+		    let room = Room.getRoom(json.roomId);
 		    if(room && room.service){
-			if(json.type === 'user'){
+			if(json.type === 'customer'){
 			    sendMessage(room.service.ws, JSON.stringify({event: 'record start'}));
 			}
 			if(json.type === 'service'){
@@ -139,8 +168,9 @@ module.exports = function (sslServer) {
 		    }
 		}
 		if(json.event === 'record over'){
+		    let room = Room.getRoom(json.roomId);
 		    if(room && room.service){
-			if(json.type === 'user'){
+			if(json.type === 'customer'){
 			    sendMessage(room.service.ws, JSON.stringify({event: 'record over'}));
 			}
 			if(json.type === 'service'){
@@ -154,13 +184,34 @@ module.exports = function (sslServer) {
 
 	ws.on('close', function () {
 	    var id = newConnector.id;
-	    User.removeUser(id);
-	    Room.removeUser(newConnector)
+	    var type = newConnector.type;
+	    if(type === 'customer'){
+		let room = Room.getRoom(newConnector.roomId);
+		if(room){
+		    var admin = Room.getAdmin();
+		    admin && sendMessage(admin.ws, JSON.stringify({
+			event: 'room close'
+		    }));
+		    if(room.service){
+			sendMessage(room.service.ws, JSON.stringify({event: 'room close'}), function () {
+			    Room.closeRoom(newConnector.roomId);
+			    User.removeUser(id);
+			});
+		    }else{
+			Room.closeRoom(newConnector.roomId);
+			User.removeUser(id);
+		    }
+		}
+	    }else{
+		User.removeUser(id);
+		Room.removeUser(newConnector);
+	    }
 	});
     });
 
-    function sendMessage(ws, data, eventType) {
+    function sendMessage(ws, data, callback) {
 	ws.send(data, function (error) {
+	    callback && callback(error);
 	    if(error){
 		console.log(`send message error：`, error);
 	    }

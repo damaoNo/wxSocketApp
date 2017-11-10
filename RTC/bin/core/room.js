@@ -6,22 +6,24 @@ var functions = require('./functions');
 var rooms = {};
 
 module.exports = {
+    getStatus: function (){
+        return rooms;
+    },
     getAll: function () {
         var result = [];
         var room;
         for(var roomId in rooms){
-            if(rooms.hasOwnProperty(roomId)){
+            if(rooms.hasOwnProperty(roomId) && roomId !== 'admin'){
                 room = rooms[roomId];
                 result.push({
                     id: room.id,
-                    name: room.name,
-                    members: room.members
+                    name: room.name
                 });
             }
         }
         return result;
     },
-    createRoom: function () {
+    createRoom: function (connector) {
         var roomId = functions.randomId();
         var roomName = 'webRTC开户房间_' + roomId;
         while(rooms[roomName]){ //如果随机产生的房间号码已存在
@@ -31,40 +33,29 @@ module.exports = {
         rooms[roomId] = {
             name: roomName,
             id: roomId,
-            members: 0,
             service: null,
-            currentUser: null,
-            users: {}
+            currentUser: connector
         };
-        return rooms[roomId];
+        return {
+            name: roomName,
+            id: roomId
+        };
     },
-    addUser: function (roomId, connector) {
+    setAdmin: function (connector){
+        rooms.admin = connector;
+    },
+    getAdmin: function (){
+        return rooms.admin || null;
+    },
+    addService: function (roomId, connector) {
         var room = rooms[roomId];
         var type = connector.type;
-        var id = connector.id;
         if(room){
             if(type === 'service'){
                 room.service = connector;
             }
-            if(type === 'user'){
-                room.currentUser = connector;
-                room.users[id] = connector;
-                room.members += 1;
-            }
         }
     },
-    // setCurrentUser: function (roomId, connector){
-    //     var room = rooms[roomId];
-    //     var type = connector.type;
-    //     if(room){
-    //         if(type === 'service'){
-    //             room.service = connector; 
-    //         }
-    //         if(type === 'user'){
-    //             room.currentUser = connector;
-    //         }
-    //     }
-    // },
     getRoom: function (roomId){
         return rooms[roomId] || null;
     },
@@ -73,8 +64,7 @@ module.exports = {
         if(room){
             return {
                 id: room.id,
-                name: room.name,
-                members: room.members
+                name: room.name
             }
         }else{
             return null;
@@ -88,13 +78,8 @@ module.exports = {
             if(type === 'service'){
                 room.service = null;
             }
-            if(type === 'user'){
+            if(type === 'customer'){
                 room.currentUser = null;
-                if(room.users[id]){
-                    room.users[id] = null;
-                    delete room.users[id];
-                    room.members -= 1;
-                }
             }
         }
     },
@@ -103,11 +88,6 @@ module.exports = {
         if(room){
             room.service = null;
             room.currentUser = null;
-            for(var user in room.users){
-                if(room.users.hasOwnProperty(user)){
-                    delete room.users[user];   
-                }
-            }
             delete rooms[roomId];
         }
     }

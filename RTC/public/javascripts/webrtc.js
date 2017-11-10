@@ -8,18 +8,17 @@ var logger = require('./logger')(config.logger);
 var util = require('./util');
 var media = require('./media');
 
-module.exports.ready = function (onReady, onJoinRoom) {
+module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     // 获取两个视频video
     var localVideo = document.getElementById('localVideo');
     var remoteVideo = document.getElementById('remoteVideo');
     var originData = util.parseUrl(window.location.href);
     var roomId = originData.params.roomId;
     var isCustomer = originData.hash === 'customer';
-    var isCaller = originData.hash === 'user';
     logger('身份：' + originData.hash);
     logger('房间号：' + roomId);
-    document.getElementById('remoteDiv').style.display = isCaller ? 'none' : 'block';
-    document.getElementById('actions').style.display = isCustomer || isCaller ? 'block' : 'none';
+    document.getElementById('remoteDiv').style.display = isCustomer ? 'none' : 'block';
+    document.getElementById('actions').style.display = isCustomer ? 'block' : 'none';
 
     var mediaRecord;
     var recordedBlobs = [];
@@ -46,24 +45,36 @@ module.exports.ready = function (onReady, onJoinRoom) {
     };
     socket.onmessage = function (event) {
 	var json = JSON.parse(event.data);
+	console.log(json);
 	logger('onmessage: ' + json.event);
 	
 	//收到ping后正式开启rtc
 	if(json.event === 'ping'){
-	    if(json.type === 'customer' || json.type === 'user'){
-		onReady && onReady(socket, startWebRtc);
+	    if(json.type === 'customer'){
+		onReady && onReady(socket);
+		window._RTC_ROOMID = json.roomId;
 		return;
 	    }
 	    if(json.type === 'service'){
 		startWebRtc();
+		socket.send(JSON.stringify({
+		    event: 'service ready',
+		    type: 'service',
+		    roomId: json.roomId
+		}));
+		window._RTC_ROOMID = json.roomId;
 		return;
 	    }
 	}
 
-	//房间信息
-	if(json.event === 'join'){
-	    console.log('响应 join');
-	    onJoinRoom && onJoinRoom(json.data);
+	if(json.event === 'full' && isCustomer){
+	    console.log('房间已满...');
+	    onRoomFull && onRoomFull();
+	    return;
+	}
+	if(json.event === 'join' && isCustomer){
+	    console.log('准备开始双向视频了...');
+	    onJoinRoom && onJoinRoom(startWebRtc, json.roomId);
 	    return;
 	}
 	
@@ -72,11 +83,7 @@ module.exports.ready = function (onReady, onJoinRoom) {
 	    console.log('收到录制请求，开始录制...');
 	    recordedBlobs = [];
 	    mediaRecord = media.record({
-		setting: {
-		    mimeType: 'video/webm\;codecs=h264',
-		    audioBitsPerSecond : 128000,
-		    videoBitsPerSecond : 256000
-		},
+		setting: config.videoOptions,
 		handlerStop: function (event) {
 		    console.log('Recorder stopped: ', event);
 		},
@@ -90,7 +97,8 @@ module.exports.ready = function (onReady, onJoinRoom) {
 	    });
 	    socket.send(JSON.stringify({
 		event: 'record start',
-		type: 'service'
+		type: 'service',
+		roomId: window._RTC_ROOMID
 	    }));
 	    return;
 	}
@@ -101,7 +109,8 @@ module.exports.ready = function (onReady, onJoinRoom) {
 	    mediaRecord && mediaRecord.stop();
 	    socket.send(JSON.stringify({
 		event: 'record over',
-		type: 'service'
+		type: 'service',
+		roomId: window._RTC_ROOMID
 	    }));
 	    return;
 	}
@@ -112,6 +121,11 @@ module.exports.ready = function (onReady, onJoinRoom) {
 	}
 	if(json.event === 'record success'){
 	    console.log('视频录制成功，保存路径：', json.path);
+	    return;
+	}
+	if(json.event === 'room close'){
+	    console.log('视频结束!');
+	    window.close();
 	    return;
 	}
 
@@ -130,6 +144,7 @@ module.exports.ready = function (onReady, onJoinRoom) {
 		    pc.setLocalDescription(desc);
 		    socket.send(JSON.stringify({
 			"event": "_answer",
+			"roomId": window._RTC_ROOMID,
 			"caller": "false",
 			"data": {
 			    "sdp": desc
@@ -147,6 +162,8 @@ module.exports.ready = function (onReady, onJoinRoom) {
 	if (event.candidate !== null) {
 	    socket.send(JSON.stringify({
 		"event": "_ice_candidate",
+		"roomId": window._RTC_ROOMID,
+		"_ice_candidate_type": originData.hash,
 		"data": {
 		    "candidate": event.candidate
 		}
@@ -163,7 +180,8 @@ module.exports.ready = function (onReady, onJoinRoom) {
 	}
     };
 
-    function startWebRtc() {
+    function startWebRtc(isCaller, roomId) {
+	window._RTC_ROOMID = roomId;
 	//启动摄像头
 	media.start(function successFunc(stream) {
 	    window._Rtc_Stream = stream;
@@ -184,6 +202,7 @@ module.exports.ready = function (onReady, onJoinRoom) {
 		    socket.send(JSON.stringify({
 			"event": "_offer",
 			"caller": "true",
+			"roomId": window._RTC_ROOMID,
 			"data": {
 			    "sdp": desc
 			}
