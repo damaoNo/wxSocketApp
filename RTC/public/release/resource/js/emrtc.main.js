@@ -341,7 +341,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     // 如果检测到媒体流连接到本地，将其绑定到一个video标签上输出
     pc.onaddstream = function (event) {
 	logger('收到远程视频流，开始视频了...');
-	if ("srcObject" in localVideo) {
+	if ("srcObject" in remoteVideo) {
 	    remoteVideo.srcObject = event.stream;
 	} else {
 	    remoteVideo.src = window.URL && window.URL.createObjectURL(event.stream) || event.stream;
@@ -353,7 +353,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	//启动摄像头
 	media.start(function successFunc(stream) {
 	    window._Rtc_Stream = pc.getRemoteStream()[0];
-	    
+
 	    if ("srcObject" in localVideo) {
 		localVideo.srcObject = stream;
 	    } else {
