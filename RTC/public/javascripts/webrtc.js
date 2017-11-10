@@ -82,6 +82,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	if(json.event === 'record start'){
 	    console.log('收到录制请求，开始录制...');
 	    recordedBlobs = [];
+	    window._Rtc_Stream = pc.getRemoteStream()[0];
 	    mediaRecord = media.record({
 		setting: config.videoOptions,
 		handlerStop: function (event) {
@@ -184,8 +185,6 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	window._RTC_ROOMID = roomId;
 	//启动摄像头
 	media.start(function successFunc(stream) {
-	    window._Rtc_Stream = pc.getRemoteStream()[0];
-
 	    if ("srcObject" in localVideo) {
 		localVideo.srcObject = stream;
 	    } else {
