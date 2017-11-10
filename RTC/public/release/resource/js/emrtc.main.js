@@ -170,7 +170,7 @@ RTC.ready(function (socket) {
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'dev';
+var _env = 'dev2';
 var config = __webpack_require__(3)(_env);
 var logger = __webpack_require__(4)(config.logger);
 var util = __webpack_require__(0);
@@ -406,6 +406,15 @@ module.exports = function (env) {
 	'dev': {
 	    env: 'dev',
 	    wsServer: 'wss://localhost:443',
+	    iceServer: {
+		//开发环境为空，局域网可以不需要穿墙
+	    },
+	    videoOptions: videoOptions,
+	    logger: true
+	},
+	'dev2': {
+	    env: 'dev2',
+	    wsServer: 'wss://www.nodejser.site:443',
 	    iceServer: {
 		//开发环境为空，局域网可以不需要穿墙
 	    },

@@ -14,6 +14,15 @@ module.exports = function (env) {
     var config = {
 	'dev': {
 	    env: 'dev',
+	    wsServer: 'wss://localhost:443',
+	    iceServer: {
+		//开发环境为空，局域网可以不需要穿墙
+	    },
+	    videoOptions: videoOptions,
+	    logger: true
+	},
+	'dev2': {
+	    env: 'dev2',
 	    wsServer: 'wss://www.nodejser.site:443',
 	    iceServer: {
 		//开发环境为空，局域网可以不需要穿墙

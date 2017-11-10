@@ -2,7 +2,7 @@
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'dev';
+var _env = 'dev2';
 var config = require('./config')(_env);
 var logger = require('./logger')(config.logger);
 var util = require('./util');
@@ -26,7 +26,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     var RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
     var pc = new RTCPeer(config.iceServer);
     // 与信令服务器的WebSocket连接
-    var socket = new WebSocket('wss://www.nodejser.site:443');
+    var socket = new WebSocket(config.wsServer);
     // socket信令处理
     socket.onopen = function() {
 	logger('socket已连接!');
