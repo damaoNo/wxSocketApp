@@ -53,6 +53,11 @@
     <br>
     <video id="replayVideo" playsinline="playsinline"></video>
 </div>
+<script>
+    window.onerror = function (e, url, line) {
+        alert(`${e}\n${url}\n{line}`)
+    }
+</script>
 <script src="/release/resource/js/emrtc.main.js"></script>
 </body>
 </html>
