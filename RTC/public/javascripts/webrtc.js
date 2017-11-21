@@ -22,11 +22,11 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 
     var mediaRecord;
     window.recordedBlobs = [];
+    // 与信令服务器的WebSocket连接
+    var socket = new WebSocket(config.wsServer);
     // 创建PeerConnection实例
     var RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
     var pc = new RTCPeer(config.iceServer);
-    // 与信令服务器的WebSocket连接
-    var socket = new WebSocket(config.wsServer);
     // socket信令处理
     socket.onopen = function() {
 	logger('socket已连接!');
