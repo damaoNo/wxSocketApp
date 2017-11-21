@@ -31,8 +31,13 @@ module.exports = function (env) {
 	    env: 'dev2',
 	    wsServer: 'wss://www.nodejser.site:443',
 	    iceServer: {
-		//开发环境为空，局域网可以不需要穿墙
-
+		"iceServers": [{
+		    "url": "stun:10.10.81.168:3478"
+		}, {
+		    "url": "turn:180.153.145.212:3478",
+		    "username": "admin",
+		    "credential": "admin"
+		}]
 	    },
 	    videoOptions: videoOptions,
 	    logger: true

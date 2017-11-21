@@ -2,7 +2,7 @@
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'test';
+var _env = 'dev2';
 var config = require('./config')(_env);
 var logger = require('./logger')(config.logger);
 var util = require('./util');
