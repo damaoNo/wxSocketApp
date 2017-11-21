@@ -38,7 +38,8 @@
         created: function () {
             var that = this;
             // 与信令服务器的WebSocket连接
-            var socket = this.socket = window._RTC_Socket = new WebSocket('wss://www.nodejser.site:443');
+            //var socket = this.socket = window._RTC_Socket = new WebSocket('wss://localhost:443');
+            var socket = this.socket = window._RTC_Socket = new WebSocket('wss://ceshi.securities.eastmoney.com:7235');
             // socket信令处理
             socket.onopen = function() {
                 socket.send(JSON.stringify({

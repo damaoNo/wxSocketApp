@@ -40,12 +40,18 @@
         <button id="btn-enter">进入房间</button>
         <button id="btn-record" disabled>开始录制</button>
         <button id="btn-record-over" disabled>录制结束</button>
+        <button id="btn-record-apply" disabled>确认</button>
     </div>
 </div>
 <div class="remote-block" id="remoteDiv">
     远程视频:
     <br>
     <video id="remoteVideo" autoplay playsinline="playsinline"></video>
+</div>
+<div class="replay-block" id="replayDiv">
+    重播录制视频: <button id="btn-replay">回放</button>
+    <br>
+    <video id="replayVideo" playsinline="playsinline"></video>
 </div>
 <script src="/release/resource/js/emrtc.main.js"></script>
 </body>

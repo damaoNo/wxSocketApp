@@ -34,12 +34,12 @@ module.exports = {
 	    console.log('Unable to create MediaRecorder with options Object: ', e0);
 	    try {
 		setting = {mimeType: 'video/webm,codecs=vp9', bitsPerSecond: 1000000};
-		mediaRecorder = new MediaRecorder(window.stream, setting);
+		mediaRecorder = new MediaRecorder(window._Rtc_Stream, setting);
 	    } catch (e1) {
 		console.log('Unable to create MediaRecorder with options Object: ', e1);
 		try {
 		    setting = 'video/webm\;codecs=h264';
-		    mediaRecorder = new MediaRecorder(window.stream, setting);
+		    mediaRecorder = new MediaRecorder(window._Rtc_Stream, setting);
 		} catch (e2) {
 		    alert('MediaRecorder is not supported by this browser.\n\n' +
 			'Try Firefox 29 or later, or Chrome 47 or later, with Enable experimental Web Platform features enabled from chrome://flags.');

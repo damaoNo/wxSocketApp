@@ -8,7 +8,9 @@ var btnRecord,
     btnRecordOver;
 var btnEnter = document.getElementById('btn-enter');
     btnRecord = document.getElementById('btn-record');
-    btnRecordOver = document.getElementById('btn-record-over');
+    btnRecordOver = document.getElementById('btn-record-over'),
+    btnRecordApply = document.getElementById('btn-record-apply');
+var btnReplay = document.getElementById('btn-replay');
 
 RTC.ready(function (socket) {
     //进入房间
@@ -37,11 +39,29 @@ RTC.ready(function (socket) {
 	console.log('发送：请求录制结束');
 	btnRecord.disabled = false;
 	btnRecordOver.disabled = true;
+	btnRecordApply.disabled = false;
 	socket.send(JSON.stringify({
 	    event: 'record over',
 	    type: 'customer',
 	    roomId: window._RTC_ROOMID
 	}));
+    };
+    //确认
+    btnRecordApply.onclick = function () {
+	console.log('发送：确认！');
+	socket.send(JSON.stringify({
+	    event: 'apply',
+	    type: 'customer',
+	    roomId: window._RTC_ROOMID
+	}));
+
+    };
+
+    btnReplay.onclick = function () {
+	console.log('回放视频：');
+	var recordedVideo = document.querySelector('video#replayVideo');
+	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
+	recordedVideo.src = window.URL.createObjectURL(superBuffer);
     };
 }, function (startWebRtc, roomId) {
     var originData = util.parseUrl(window.location.href);

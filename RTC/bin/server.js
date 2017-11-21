@@ -20,3 +20,12 @@ signalServer(https.createServer({
     console.log(`信令服务已启动，端口: ${port}`);
     log(`信令服务已启动，端口: ${port}`);
 }));
+
+process.on('uncaughtException', function (err) {
+    console.log(`Caught exception: ${err}`);
+    log(`Caught exception: ${err}`);
+});
+process.on('exit', function (code) {
+    console.log(`Caught exception before exit: ${code}`);
+    log(`Caught exception before exit: ${code}`);
+});

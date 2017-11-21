@@ -14,17 +14,20 @@ var config = require('../config');
 function Record(socket) {
     this.socket = socket;
     this.fileWriteStream = null;
+    this.tempFilePath = '';
+    this.savePath = '';
+    this.saveFileName = '';
     return this;
 }
 
 Record.prototype = {
     start: function () {
 	var _this = this;
-	var fileName = Uuid.v4() + config.suffix;
-	var tempFilePath = path.join(config.tempVideoPath, fileName);
+	this.saveFileName = Uuid.v4() + config.suffix;
+	this.tempFilePath = path.join(config.tempVideoPath, this.saveFileName);
 	var date = functions.dateFormat.call(new Date(), 'yyyy-MM-dd');
-	var savePath = path.join(config.videoPath, date);
-	this.fileWriteStream = fs.createWriteStream(tempFilePath, {
+	this.savePath = path.join(config.videoPath, date);
+	this.fileWriteStream = fs.createWriteStream(this.tempFilePath, {
 	    flags: 'a',
 	    encoding: null,
 	    mode: '0666'
@@ -32,37 +35,33 @@ Record.prototype = {
 	this.fileWriteStream.on('open', function () {
 	    console.log('file write stream open ...');
 	    log('file write stream open ...');
-	    fs.stat(savePath, function (err, stat) {
+	    fs.stat(_this.savePath, function (err, stat) {
 		if(err){
-		    console.log(`创建新的目录:${savePath}`);
-		    log(`创建新的目录:${savePath}`);
-		    fs.mkdir(savePath);
+		    console.log(`创建新的目录:${_this.savePath}`);
+		    log(`创建新的目录:${_this.savePath}`);
+		    fs.mkdir(_this.savePath);
 		}
 	    });
 	});
 	this.fileWriteStream.on('close', function () {
 	    console.log('file write stream closed!');
 	    log('file write stream closed!');
-	    fs.rename(tempFilePath, path.join(savePath, fileName), function (err) {
+	    fs.lstat(_this.tempFilePath, function (err, stats) {
 		if(err){
-		    console.log('重命名文件失败！');
-		    log('重命名文件失败！');
-		    _this.socket.send(JSON.stringify({event: 'record failed', errorMessage: err}), function (error) {
-			if(error){
-			    console.log(error);
-			    log(error);
-			}
-		    });
-		}else{
-		    let videoFile = [path.basename(config.videoPath), date, fileName].join('/');
-		    console.log(`${videoFile} 文件已保存！`);
-		    log(`${videoFile} 文件已保存！`);
-		    _this.socket.send(JSON.stringify({event: 'record success', path: videoFile}), function (error) {
-			if(error){
-			    console.log(error);
-			    log(error);
-			}
-		    });
+		    console.log('临时文件保存失败! err:' + (err.stack || err));
+		    log('临时文件保存失败! err:' + (err.stack || err));
+		    _this.socket.send(JSON.stringify({action: 'record error', errorMessage: '录制异常，请重新录制！'}));
+		} else{
+		    console.log('临时文件已保存：' + _this.tempFilePath + ', size:' + stats.size + 'bytes.');
+		    log('临时文件已保存：' + _this.tempFilePath + ', size:' + stats.size + 'bytes.');
+		    if(stats.size === 0){
+			console.log('发送重新录制消息！');
+			log('发送重新录制消息！');
+			_this.socket.send(JSON.stringify({action: 'record error', errorMessage: '录制异常，请重新录制！'}), function(err){
+			    console.log(err ? '发送重新录制消息失败，原因：\n' + err : '已发送!');
+			    log(err ? '发送重新录制消息失败，原因：\n' + err : '已发送!');
+			});
+		    }
 		}
 	    });
 	});
@@ -73,6 +72,30 @@ Record.prototype = {
     end: function () {
 	this.fileWriteStream && this.fileWriteStream.end();
 	this.fileWriteStream = null;
+    },
+    transformFile: function(callback){
+	var _this = this;
+	var date = functions.dateFormat.call(new Date(), 'yyyy-MM-dd');
+	fs.rename(this.tempFilePath, path.join(this.savePath, this.saveFileName), function (err) {
+	    if(err){
+		console.log('确认视频文件重命名失败！');
+		log('确认视频文件重命名失败！ err:' + (err.stack || err));
+		callback(JSON.stringify({action: 'saved failed', errorMessage: '确认视频文件重命名失败！'}));
+	    }else{
+		let videoFile = [path.basename(config.videoPath), date, _this.saveFileName].join('/');
+		fs.lstat(videoFile, function (err, stats) {
+		    if(err){
+			console.log('确认视频文件保存失败! err:' + (err.stack || err));
+			log('确认视频文件保存失败! err:' + (err.stack || err));
+			callback(JSON.stringify({action: 'saved failed', errorMessage: '确认视频文件重命名失败！'}));
+		    } else{
+			console.log(`${videoFile} 文件已保存！`);
+			log('确认视频文件已保存：' + videoFile + ', size:' + stats.size + 'bytes.');
+			callback(JSON.stringify({action: 'saved success', path: videoFile}));
+		    }
+		});
+	    }
+	});
     }
 };
 

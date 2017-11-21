@@ -51,7 +51,7 @@ module.exports = function (sslServer) {
 	ws.on('message', function(message) {
 	    //二进制数据
 	    if(typeof message === 'object'){
-		record.write(message);
+		record && record.write(message);
 		return;
 	    }
 
@@ -163,6 +163,7 @@ module.exports = function (sslServer) {
 			}
 			if(json.type === 'service'){
 			    console.log('start to record!');
+			    log('start to record!');
 			    record && record.start();
 			}
 		    }
@@ -176,6 +177,20 @@ module.exports = function (sslServer) {
 			if(json.type === 'service'){
 			    console.log('stop record!');
 			    record && record.end();
+			}
+		    }
+		}
+		if(json.event === 'apply'){
+		    let room = Room.getRoom(json.roomId);
+		    if(room && room.service){
+			if(json.type === 'customer'){
+			    sendMessage(room.service.ws, JSON.stringify({event: 'record apply'}));
+			}
+			if(json.type === 'service'){
+			    console.log(`发送最终结果给客户：${message}`);
+			    record && record.transformFile(function (message) {
+				sendMessage(room.currentUser.ws, message);
+			    });
 			}
 		    }
 		}

@@ -5,6 +5,13 @@
 var gulp = require('gulp');
 var sh = require('shelljs');
 
+
+gulp.task('build', function () {
+    sh.exec('webpack', function (err) {
+	console.log('\nbuild completed!\n');
+    });
+});
+
 gulp.task('watch', function () {
     gulp.watch(['./public/javascripts/**/*.js'], function () {
 	sh.exec('webpack', function () {

@@ -2,7 +2,7 @@
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'dev2';
+var _env = 'test';
 var config = require('./config')(_env);
 var logger = require('./logger')(config.logger);
 var util = require('./util');
@@ -21,7 +21,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     document.getElementById('actions').style.display = isCustomer ? 'block' : 'none';
 
     var mediaRecord;
-    var recordedBlobs = [];
+    window.recordedBlobs = [];
     // 创建PeerConnection实例
     var RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
     var pc = new RTCPeer(config.iceServer);
@@ -115,6 +115,17 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    return;
 	}
 
+	//确认录制
+	if(json.event === 'record apply'){
+	    console.log('收到请求，确认录制！');
+	    socket.send(JSON.stringify({
+		event: 'apply',
+		type: 'service',
+		roomId: window._RTC_ROOMID
+	    }));
+	    return;
+	}
+
 	if(json.event === 'record failed'){
 	    console.log('视频录制失败原因：', json.errorMessage);
 	    return;
@@ -172,6 +183,8 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     };
     // 如果检测到媒体流连接到本地，将其绑定到一个video标签上输出
     pc.onaddstream = function (event) {
+	console.log('stream remote:', event.stream);
+	window._Rtc_Stream = event.stream;
 	logger('收到远程视频流，开始视频了...');
 	if ("srcObject" in remoteVideo) {
 	    remoteVideo.srcObject = event.stream;
@@ -179,14 +192,12 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    remoteVideo.src = window.URL && window.URL.createObjectURL(event.stream) || event.stream;
 	}
     };
-    pc.ontrack = function(event) {
-	window._Rtc_Stream = event.streams[0];
-    };
 
     function startWebRtc(isCaller, roomId) {
 	window._RTC_ROOMID = roomId;
 	//启动摄像头
 	media.start(function successFunc(stream) {
+	    console.log('stream local:', stream);
 	    if ("srcObject" in localVideo) {
 		localVideo.srcObject = stream;
 	    } else {
@@ -217,4 +228,12 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    logger('本地摄像头输出流异常：' + err.name);
 	});
     }
+
+    var btnReplay = document.getElementById('btn-replay');
+    btnReplay.onclick = function () {
+	console.log('回放视频：');
+	var recordedVideo = document.querySelector('video#replayVideo');
+	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
+	recordedVideo.src = window.URL.createObjectURL(superBuffer);
+    };
 };

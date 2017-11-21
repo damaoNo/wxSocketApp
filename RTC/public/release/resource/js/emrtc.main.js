@@ -115,7 +115,9 @@ var btnRecord,
     btnRecordOver;
 var btnEnter = document.getElementById('btn-enter');
     btnRecord = document.getElementById('btn-record');
-    btnRecordOver = document.getElementById('btn-record-over');
+    btnRecordOver = document.getElementById('btn-record-over'),
+    btnRecordApply = document.getElementById('btn-record-apply');
+var btnReplay = document.getElementById('btn-replay');
 
 RTC.ready(function (socket) {
     //进入房间
@@ -144,11 +146,29 @@ RTC.ready(function (socket) {
 	console.log('发送：请求录制结束');
 	btnRecord.disabled = false;
 	btnRecordOver.disabled = true;
+	btnRecordApply.disabled = false;
 	socket.send(JSON.stringify({
 	    event: 'record over',
 	    type: 'customer',
 	    roomId: window._RTC_ROOMID
 	}));
+    };
+    //确认
+    btnRecordApply.onclick = function () {
+	console.log('发送：确认！');
+	socket.send(JSON.stringify({
+	    event: 'apply',
+	    type: 'customer',
+	    roomId: window._RTC_ROOMID
+	}));
+
+    };
+
+    btnReplay.onclick = function () {
+	console.log('回放视频：');
+	var recordedVideo = document.querySelector('video#replayVideo');
+	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
+	recordedVideo.src = window.URL.createObjectURL(superBuffer);
     };
 }, function (startWebRtc, roomId) {
     var originData = util.parseUrl(window.location.href);
@@ -170,7 +190,7 @@ RTC.ready(function (socket) {
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'dev2';
+var _env = 'test';
 var config = __webpack_require__(3)(_env);
 var logger = __webpack_require__(4)(config.logger);
 var util = __webpack_require__(0);
@@ -189,7 +209,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     document.getElementById('actions').style.display = isCustomer ? 'block' : 'none';
 
     var mediaRecord;
-    var recordedBlobs = [];
+    window.recordedBlobs = [];
     // 创建PeerConnection实例
     var RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
     var pc = new RTCPeer(config.iceServer);
@@ -283,6 +303,17 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    return;
 	}
 
+	//确认录制
+	if(json.event === 'record apply'){
+	    console.log('收到请求，确认录制！');
+	    socket.send(JSON.stringify({
+		event: 'apply',
+		type: 'service',
+		roomId: window._RTC_ROOMID
+	    }));
+	    return;
+	}
+
 	if(json.event === 'record failed'){
 	    console.log('视频录制失败原因：', json.errorMessage);
 	    return;
@@ -340,6 +371,8 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     };
     // 如果检测到媒体流连接到本地，将其绑定到一个video标签上输出
     pc.onaddstream = function (event) {
+	console.log('stream remote:', event.stream);
+	window._Rtc_Stream = event.stream;
 	logger('收到远程视频流，开始视频了...');
 	if ("srcObject" in remoteVideo) {
 	    remoteVideo.srcObject = event.stream;
@@ -347,14 +380,12 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    remoteVideo.src = window.URL && window.URL.createObjectURL(event.stream) || event.stream;
 	}
     };
-    pc.ontrack = function(event) {
-	window._Rtc_Stream = event.streams[0];
-    };
 
     function startWebRtc(isCaller, roomId) {
 	window._RTC_ROOMID = roomId;
 	//启动摄像头
 	media.start(function successFunc(stream) {
+	    console.log('stream local:', stream);
 	    if ("srcObject" in localVideo) {
 		localVideo.srcObject = stream;
 	    } else {
@@ -385,6 +416,14 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    logger('本地摄像头输出流异常：' + err.name);
 	});
     }
+
+    var btnReplay = document.getElementById('btn-replay');
+    btnReplay.onclick = function () {
+	console.log('回放视频：');
+	var recordedVideo = document.querySelector('video#replayVideo');
+	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
+	recordedVideo.src = window.URL.createObjectURL(superBuffer);
+    };
 };
 
 /***/ }),
@@ -409,7 +448,13 @@ module.exports = function (env) {
 	    env: 'dev',
 	    wsServer: 'wss://localhost:443',
 	    iceServer: {
-		//开发环境为空，局域网可以不需要穿墙
+		"iceServers": [{
+		    "url": "stun:180.153.145.212:3478"
+		}, {
+		    "url": "turn:180.153.145.212:3478",
+		    "username": "admin",
+		    "credential": "admin"
+		}]
 	    },
 	    videoOptions: videoOptions,
 	    logger: true
@@ -419,15 +464,22 @@ module.exports = function (env) {
 	    wsServer: 'wss://www.nodejser.site:443',
 	    iceServer: {
 		//开发环境为空，局域网可以不需要穿墙
+
 	    },
 	    videoOptions: videoOptions,
 	    logger: true
 	},
 	'test': {
 	    env: 'test',
-	    wsServer: 'wss://ceshi.securities.eastmoney.com',
+	    wsServer: 'wss://ceshi.securities.eastmoney.com:7235',
 	    iceServer: {
-
+		"iceServers": [{
+		    "url": "stun:10.10.81.168:3478"
+		}, {
+		    "url": "turn:180.153.145.212:3478",
+		    "username": "admin",
+		    "credential": "admin"
+		}]
 	    },
 	    videoOptions: videoOptions,
 	    logger: true
@@ -527,12 +579,12 @@ module.exports = {
 	    console.log('Unable to create MediaRecorder with options Object: ', e0);
 	    try {
 		setting = {mimeType: 'video/webm,codecs=vp9', bitsPerSecond: 1000000};
-		mediaRecorder = new MediaRecorder(window.stream, setting);
+		mediaRecorder = new MediaRecorder(window._Rtc_Stream, setting);
 	    } catch (e1) {
 		console.log('Unable to create MediaRecorder with options Object: ', e1);
 		try {
 		    setting = 'video/webm\;codecs=h264';
-		    mediaRecorder = new MediaRecorder(window.stream, setting);
+		    mediaRecorder = new MediaRecorder(window._Rtc_Stream, setting);
 		} catch (e2) {
 		    alert('MediaRecorder is not supported by this browser.\n\n' +
 			'Try Firefox 29 or later, or Chrome 47 or later, with Enable experimental Web Platform features enabled from chrome://flags.');

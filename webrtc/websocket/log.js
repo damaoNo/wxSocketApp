@@ -8,7 +8,7 @@ const path = require('path');
 module.exports = function (string) {
     let now = new Date();
     let date = dateFormat.call(new Date(), 'yyyy-MM-dd');
-    let logDir = path.resolve(__dirname, '../webrtcvideo001');
+    let logDir = path.resolve(__dirname, '../logs');
     let logFile = path.join(logDir, `${date}.log`);
     let content = `[${now.toLocaleString()}]: ${string}\r\n`;
     fs.appendFile(logFile, content, function(err){
