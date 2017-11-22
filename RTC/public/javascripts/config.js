@@ -34,7 +34,7 @@ module.exports = function (env) {
 		"iceServers": [{
 		    "url": "stun:10.10.81.168:3478"
 		}, {
-		    "url": "turn:180.153.145.212:3478",
+		    "url": "turn:10.10.81.168:3478",
 		    "username": "admin",
 		    "credential": "admin"
 		}]
