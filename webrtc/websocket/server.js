@@ -10,7 +10,7 @@ var WebSocket = require('ws');
 var Uuid = require('uuid');
 var log = require('./log');
 var config = require('./config');
-var port = 443;
+var port = config.port;
 var server = https.createServer({
     key: config.key,
     cert: config.cert
@@ -61,9 +61,13 @@ var wss = new WebSocket.Server({
     }
 });
 
-process.on('uncaughtException', function (err) {
-    console.log(`Caught exception: ${err}`);
-    log(`Caught exception: ${err}`);
+// process.on('uncaughtException', function (err) {
+//     console.log(`Caught exception: ${err}`);
+//     log(`Caught exception: ${err}`);
+// });
+process.on('exit', function (code) {
+    console.log(`Caught exception before exit: ${code}`);
+    log(`Caught exception before exit: ${code}`);
 });
 
 function dateFormat(fmt) {
@@ -122,6 +126,11 @@ wss.broadcast = function broadcast(message, verify) {
 
 wss.on('connection', function connection(socket) {
     var fileWriteStream = null;
+    var fileName = Uuid.v4() + config.suffix;
+    var tempFilePath = path.join(config.tempVideoPath, fileName);
+    var date = dateFormat.call(new Date(), 'yyyy-MM-dd');
+    var savePath = path.join(config.videoPath, date);
+
     socket.verify = '';
     socket.send(JSON.stringify({
         action: 'apply format',
@@ -146,10 +155,6 @@ wss.on('connection', function connection(socket) {
                     socket.verify = actionObj.verify;
                 },
                 'record start': function () {
-                    var fileName = Uuid.v4() + config.suffix;
-                    var tempFilePath = path.join(config.tempVideoPath, fileName);
-                    var date = dateFormat.call(new Date(), 'yyyy-MM-dd');
-                    var savePath = path.join(config.videoPath, date);
                     fileWriteStream = fs.createWriteStream(tempFilePath, {
                         flags: 'a',
                         encoding: null,
@@ -169,39 +174,59 @@ wss.on('connection', function connection(socket) {
                     fileWriteStream.on('close', function () {
                         console.log('file write stream closed!');
                         log('file write stream closed!');
-                        fs.rename(tempFilePath, path.join(savePath, fileName), function (err) {
+                        fs.lstat(tempFilePath, function (err, stats) {
                             if(err){
-                                console.log('重命名文件失败！');
-                                log('重命名文件失败！');
-                                socket.send(JSON.stringify({action: 'saved failed', errorMessage: '视频保存失败'}), function (error) {
-                                    if(error){
-                                        console.log(error);
-                                        log(error);
-                                    }
-                                });
-                            }else{
-                                let videoFile = ['webrtcvideo001', date, fileName].join('/');
-                                console.log(`${videoFile} 文件已保存！`);
-                                log(`${videoFile} 文件已保存！`);
-                                socket.send(JSON.stringify({action: 'saved success', path: videoFile}), function (error) {
-                                    if(error){
-                                        console.log(error);
-                                        log(error);
-                                    }
-                                });
-                                wss.broadcast(JSON.stringify({
-                                    action: 'user recode over',
-                                    user: token,
-                                    time: new Date().toLocaleString(),
-                                    video: [config.videoUrl, fileName].join('')
-                                }), 'admin');
+                                log('临时文件保存失败! err:' + (err.stack || err));
+                                socket.send(JSON.stringify({action: 'record error', errorMessage: '录制异常，请重新录制！'}));
+                            } else{
+                                log('临时文件已保存：' + tempFilePath + ', size:' + stats.size + 'bytes.');
+                                if(stats.size === 0){
+                                    socket.send(JSON.stringify({action: 'record error', errorMessage: '录制异常，请重新录制！'}));
+                                }
                             }
                         });
                     });
                 },
                 'record over': function () {
-                    fileWriteStream && fileWriteStream.end();
-                    fileWriteStream = null;
+                    killWriteStream();
+                },
+                //确认录制
+                'apply': function () {
+                    fs.rename(tempFilePath, path.join(savePath, fileName), function (err) {
+                        if(err){
+                            console.log('确认视频文件重命名失败！');
+                            log('确认视频文件重命名失败！ err:' + (err.stack || err));
+                            socket.send(JSON.stringify({action: 'saved failed', errorMessage: '确认视频文件重命名失败！'}), function (error) {
+                                if(error){
+                                    console.log(error);
+                                    log(error);
+                                }
+                            });
+                        }else{
+                            let videoFile = ['webrtcvideo001', date, fileName].join('/');
+                            fs.lstat(videoFile, function (err, stats) {
+                                if(err){
+                                    log('确认视频文件保存失败! err:' + (err.stack || err));
+                                } else{
+                                    console.log(`${videoFile} 文件已保存！`);
+                                    log('确认视频文件已保存：' + videoFile + ', size:' + stats.size + 'bytes.');
+                                    socket.send(JSON.stringify({action: 'saved success', path: videoFile}), function (error) {
+                                        if(error){
+                                            console.log(error);
+                                            log(error);
+                                        }
+                                    });
+                                }
+                            });
+                            // 广播给客服
+                            // wss.broadcast(JSON.stringify({
+                            //     action: 'user recode over',
+                            //     user: token,
+                            //     time: new Date().toLocaleString(),
+                            //     video: [config.videoUrl, fileName].join('')
+                            // }), 'admin');
+                        }
+                    });
                 },
                 'other wise': function () {
                     console.log('未定义的 action!');
@@ -212,6 +237,13 @@ wss.on('connection', function connection(socket) {
         }
     });
     socket.on('close', function onClose() {
-        //todo
+        killWriteStream();
     });
+    
+    function killWriteStream() {
+        fileWriteStream && fileWriteStream.end();
+        setTimeout(function () {
+            fileWriteStream = null;
+        }, 1000);
+    }
 });
