@@ -207,18 +207,18 @@ wss.on('connection', function connection(socket) {
                         }else{
                             let videoFile = ['webrtcvideo001', date, fileName].join('/');
                             fs.lstat(videoFile, function (err, stats) {
+                                log(`${videoFile} 文件已保存！`);
                                 if(err){
-                                    log('确认视频文件保存失败! err:' + (err.stack || err));
+                                    log('读取文件摘要失败! err:' + (err.stack || err));
                                 } else{
-                                    console.log(`${videoFile} 文件已保存！`);
-                                    log('确认视频文件已保存：' + videoFile + ', size:' + stats.size + 'bytes.');
-                                    socket.send(JSON.stringify({action: 'saved success', path: videoFile}), function (error) {
-                                        if(error){
-                                            console.log(error);
-                                            log(error);
-                                        }
-                                    });
+                                    log('读取文件文件大小， size:' + stats.size + 'bytes.');
                                 }
+                                socket.send(JSON.stringify({action: 'saved success', path: videoFile}), function (error) {
+                                    if(error){
+                                        console.log(error);
+                                        log(error);
+                                    }
+                                });
                             });
                             // 广播给客服
                             // wss.broadcast(JSON.stringify({
