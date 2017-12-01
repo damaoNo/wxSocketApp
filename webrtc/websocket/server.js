@@ -182,6 +182,8 @@ wss.on('connection', function connection(socket) {
                                 log('临时文件已保存：' + tempFilePath + ', size:' + stats.size + 'bytes.');
                                 if(stats.size === 0){
                                     socket.send(JSON.stringify({action: 'record error', errorMessage: '录制异常，请重新录制！'}));
+                                }else{
+                                    socket.send(JSON.stringify({action: 'record success'}));
                                 }
                             }
                         });
