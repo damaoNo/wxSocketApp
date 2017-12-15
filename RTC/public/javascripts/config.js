@@ -14,12 +14,14 @@ module.exports = function (env) {
     var config = {
 	'dev': {
 	    env: 'dev',
-	    wsServer: 'wss://localhost:443',
+	    //wsServer: 'wss://www.nodejser.site:443',
+	    
+	    wsServer: 'wss://ceshi.securities.eastmoney.com:7235',
 	    iceServer: {
 		"iceServers": [{
-		    "url": "stun:180.153.145.212:3478"
+		    "url": "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
-		    "url": "turn:180.153.145.212:3478",
+		    "url": "turn:ceshi.securities.eastmoney.com:7239",
 		    "username": "admin",
 		    "credential": "admin"
 		}]
@@ -31,13 +33,8 @@ module.exports = function (env) {
 	    env: 'dev2',
 	    wsServer: 'wss://www.nodejser.site:443',
 	    iceServer: {
-		"iceServers": [{
-		    "url": "stun:10.10.81.168:3478"
-		}, {
-		    "url": "turn:10.10.81.168:3478",
-		    "username": "admin",
-		    "credential": "admin"
-		}]
+		//开发环境为空，局域网可以不需要穿墙
+
 	    },
 	    videoOptions: videoOptions,
 	    logger: true

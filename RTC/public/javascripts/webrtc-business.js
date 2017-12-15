@@ -62,6 +62,7 @@ RTC.ready(function (socket) {
 	var recordedVideo = document.querySelector('video#replayVideo');
 	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
 	recordedVideo.src = window.URL.createObjectURL(superBuffer);
+	recordedVideo.play();
     };
 }, function (startWebRtc, roomId) {
     var originData = util.parseUrl(window.location.href);

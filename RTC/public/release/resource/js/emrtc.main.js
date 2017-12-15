@@ -169,6 +169,7 @@ RTC.ready(function (socket) {
 	var recordedVideo = document.querySelector('video#replayVideo');
 	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
 	recordedVideo.src = window.URL.createObjectURL(superBuffer);
+	recordedVideo.play();
     };
 }, function (startWebRtc, roomId) {
     var originData = util.parseUrl(window.location.href);
@@ -190,7 +191,7 @@ RTC.ready(function (socket) {
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'test';
+var _env = 'dev';
 var config = __webpack_require__(3)(_env);
 var logger = __webpack_require__(4)(config.logger);
 var util = __webpack_require__(0);
@@ -205,6 +206,8 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     var isCustomer = originData.hash === 'customer';
     logger('身份：' + originData.hash);
     logger('房间号：' + roomId);
+    
+    document.getElementById('localVideo').style.display = isCustomer ? 'block' : 'none';
     document.getElementById('remoteDiv').style.display = isCustomer ? 'none' : 'block';
     document.getElementById('actions').style.display = isCustomer ? 'block' : 'none';
 
@@ -271,6 +274,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    console.log('收到录制请求，开始录制...');
 	    recordedBlobs = [];
 	    mediaRecord = media.record({
+		isCustomer: isCustomer,
 		setting: config.videoOptions,
 		handlerStop: function (event) {
 		    console.log('Recorder stopped: ', event);
@@ -423,6 +427,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	var recordedVideo = document.querySelector('video#replayVideo');
 	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
 	recordedVideo.src = window.URL.createObjectURL(superBuffer);
+	recordedVideo.play();
     };
 };
 
@@ -446,12 +451,14 @@ module.exports = function (env) {
     var config = {
 	'dev': {
 	    env: 'dev',
-	    wsServer: 'wss://localhost:443',
+	    //wsServer: 'wss://www.nodejser.site:443',
+	    
+	    wsServer: 'wss://ceshi.securities.eastmoney.com:7235',
 	    iceServer: {
 		"iceServers": [{
-		    "url": "stun:180.153.145.212:3478"
+		    "url": "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
-		    "url": "turn:180.153.145.212:3478",
+		    "url": "turn:ceshi.securities.eastmoney.com:7239",
 		    "username": "admin",
 		    "credential": "admin"
 		}]
@@ -574,7 +581,7 @@ module.exports = {
 	var mediaRecorder;
 	var setting = options.setting;
 	try {
-	    mediaRecorder = new MediaRecorder(window._Rtc_Stream, setting);
+	    mediaRecorder = new MediaRecorder(window._Rtc_Stream, options.isCustomer ? setting : {});
 	} catch (e0) {
 	    console.log('Unable to create MediaRecorder with options Object: ', e0);
 	    try {

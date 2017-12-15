@@ -29,7 +29,7 @@ module.exports = {
 	var mediaRecorder;
 	var setting = options.setting;
 	try {
-	    mediaRecorder = new MediaRecorder(window._Rtc_Stream, setting);
+	    mediaRecorder = new MediaRecorder(window._Rtc_Stream, options.isCustomer ? setting : {});
 	} catch (e0) {
 	    console.log('Unable to create MediaRecorder with options Object: ', e0);
 	    try {

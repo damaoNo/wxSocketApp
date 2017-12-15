@@ -2,7 +2,7 @@
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'dev2';
+var _env = 'dev';
 var config = require('./config')(_env);
 var logger = require('./logger')(config.logger);
 var util = require('./util');
@@ -17,16 +17,18 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
     var isCustomer = originData.hash === 'customer';
     logger('身份：' + originData.hash);
     logger('房间号：' + roomId);
+    
+    document.getElementById('localVideo').style.display = isCustomer ? 'block' : 'none';
     document.getElementById('remoteDiv').style.display = isCustomer ? 'none' : 'block';
     document.getElementById('actions').style.display = isCustomer ? 'block' : 'none';
 
     var mediaRecord;
     window.recordedBlobs = [];
-    // 与信令服务器的WebSocket连接
-    var socket = new WebSocket(config.wsServer);
     // 创建PeerConnection实例
     var RTCPeer = window.RTCPeerConnection || window.webkitRTCPeerConnection || window.mozRTCPeerConnection;
     var pc = new RTCPeer(config.iceServer);
+    // 与信令服务器的WebSocket连接
+    var socket = new WebSocket(config.wsServer);
     // socket信令处理
     socket.onopen = function() {
 	logger('socket已连接!');
@@ -83,6 +85,7 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	    console.log('收到录制请求，开始录制...');
 	    recordedBlobs = [];
 	    mediaRecord = media.record({
+		isCustomer: isCustomer,
 		setting: config.videoOptions,
 		handlerStop: function (event) {
 		    console.log('Recorder stopped: ', event);
@@ -235,5 +238,6 @@ module.exports.ready = function (onReady, onJoinRoom, onRoomFull) {
 	var recordedVideo = document.querySelector('video#replayVideo');
 	var superBuffer = new Blob(window.recordedBlobs, {type: 'video/webm'});
 	recordedVideo.src = window.URL.createObjectURL(superBuffer);
+	recordedVideo.play();
     };
 };
