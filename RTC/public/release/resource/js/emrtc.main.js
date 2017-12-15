@@ -455,13 +455,16 @@ module.exports = function (env) {
 
 	    wsServer: 'wss://ceshi.securities.eastmoney.com:7235',
 	    iceServer: {
-		// "iceServers": [{
-		//     "url": "stun:ceshi.securities.eastmoney.com:7239"
-		// }, {
-		//     "url": "turn:ceshi.securities.eastmoney.com:7239",
-		//     "username": "admin",
-		//     "credential": "admin"
-		// }]
+		"iceServers": [{
+		    "url": "stun:ceshi.securities.eastmoney.com:7239"
+		}, {
+		    "url": [
+			"turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
+			"turn:ceshi.securities.eastmoney.com:7239?transport=udp"
+		    ],
+		    "username": "admin",
+		    "credential": "admin"
+		}]
 	    },
 	    videoOptions: videoOptions,
 	    logger: true
