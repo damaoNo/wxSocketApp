@@ -187,9 +187,10 @@ module.exports = function (sslServer) {
 			    sendMessage(room.service.ws, JSON.stringify({event: 'record apply'}));
 			}
 			if(json.type === 'service'){
-			    console.log(`发送最终结果给客户：${message}`);
+			    console.log(`发送最终结果给客户和客服：${message}`);
 			    record && record.transformFile(function (message) {
 				sendMessage(room.currentUser.ws, message);
+				sendMessage(room.service.ws, message);
 			    });
 			}
 		    }
