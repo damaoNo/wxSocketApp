@@ -444,7 +444,7 @@ module.exports = function (env) {
     'use strict';
 
     var videoOptions = {
-	mimeType: 'video/webm\;codecs=h264',
+	mimeType: 'video/webm\;codecs=vp8',
 	audioBitsPerSecond : 128000,
 	videoBitsPerSecond : 256000
     };
@@ -458,7 +458,7 @@ module.exports = function (env) {
 		"iceServers": [{
 		    "url": "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
-		    "url": [
+		    "urls": [
 			"turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
 			"turn:ceshi.securities.eastmoney.com:7239?transport=udp"
 		    ],
@@ -584,7 +584,8 @@ module.exports = {
 	var mediaRecorder;
 	var setting = options.setting;
 	try {
-	    mediaRecorder = new MediaRecorder(window._Rtc_Stream, options.isCustomer ? setting : {});
+	    mediaRecorder = new MediaRecorder(window._Rtc_Stream, setting);
+	    //mediaRecorder = new MediaRecorder(window._Rtc_Stream, options.isCustomer ? setting : {});
 	} catch (e0) {
 	    console.log('Unable to create MediaRecorder with options Object: ', e0);
 	    try {
