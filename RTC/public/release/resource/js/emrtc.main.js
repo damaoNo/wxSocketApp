@@ -573,7 +573,7 @@ module.exports = {
 	    }
 	}
 	navigator.mediaDevices.getUserMedia({
-	    "audio": false,
+	    "audio": true,
 	    "video": true
 	}).then(successFunc).catch(errorFunc);
     },
