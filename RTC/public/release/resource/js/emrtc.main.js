@@ -456,11 +456,11 @@ module.exports = function (env) {
 	    wsServer: 'wss://ceshi.securities.eastmoney.com:7235',
 	    iceServer: {
 		"iceServers": [{
-		    "url": "stun:ceshi.securities.eastmoney.com:7239"
+		    "url": "stun:180.168.4.202:7239"
 		}, {
 		    "urls": [
-			"turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
-			"turn:ceshi.securities.eastmoney.com:7239?transport=udp"
+			"turn:180.168.4.202:7239?transport=TCP",
+			"turn:180.168.4.202:7239?transport=udp"
 		    ],
 		    "username": "admin",
 		    "credential": "admin"
