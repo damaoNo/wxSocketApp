@@ -458,13 +458,13 @@ module.exports = function (env) {
 		"iceServers": [{
 		    "url": "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
-		    // "urls": [
-			// "turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
-			// "turn:ceshi.securities.eastmoney.com:7239?transport=udp"
-		    //
-		    // ],
-		    
-		    "url": "turn:ceshi.securities.eastmoney.com:7239",
+		    "urls": [
+			"turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
+			"turn:ceshi.securities.eastmoney.com:7239?transport=udp"
+
+		    ],
+
+		    //"url": "turn:ceshi.securities.eastmoney.com:7239",
 		    "username": "admin",
 		    "credential": "admin"
 		}]
