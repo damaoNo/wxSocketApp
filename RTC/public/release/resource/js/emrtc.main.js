@@ -457,12 +457,12 @@ module.exports = function (env) {
 		"iceServers": [{
 		    "url": "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
-		    // "urls": [
-			// "turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
-			// "turn:ceshi.securities.eastmoney.com:7239?transport=udp"
-			//
-		    // ],
-		    "url": "turn:ceshi.securities.eastmoney.com:7239",
+		    "urls": [
+			"turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
+			"turn:ceshi.securities.eastmoney.com:7239?transport=udp"
+
+		    ],
+		    //"url": "turn:ceshi.securities.eastmoney.com:7239",
 		    "username": "admin",
 		    "credential": "admin"
 		}]
@@ -476,7 +476,11 @@ module.exports = function (env) {
 	    wsServer: 'wss://www.nodejser.site:443',
 	    iceServer: {
 		//开发环境为空，局域网可以不需要穿墙
-		'iceServers': [{ 'url': 'stun:stun.services.mozilla.com' }, { 'url': 'stun:stunserver.org' }, { 'url': 'stun:stun.l.google.com:19302' }]
+		'iceServers': [
+		    { 'url': 'stun:stun.services.mozilla.com' },
+		    { 'url': 'stun:stunserver.org' },
+		    { 'url': 'stun:stun.l.google.com:19302' }
+		]
 	    },
 	    videoOptions: videoOptions,
 	    logger: true
