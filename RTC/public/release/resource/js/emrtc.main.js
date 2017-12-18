@@ -191,7 +191,8 @@ RTC.ready(function (socket) {
  * Created by ChenChao on 2017/11/2.
  */
 
-var _env = 'dev2';
+var _env = 'dev';
+
 var config = __webpack_require__(3)(_env);
 var logger = __webpack_require__(4)(config.logger);
 var util = __webpack_require__(0);
