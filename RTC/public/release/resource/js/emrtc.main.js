@@ -457,11 +457,12 @@ module.exports = function (env) {
 		"iceServers": [{
 		    "url": "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
-		    "urls": [
-			"turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
-			"turn:ceshi.securities.eastmoney.com:7239?transport=udp"
-			
-		    ],
+		    // "urls": [
+			// "turn:ceshi.securities.eastmoney.com:7239?transport=TCP",
+			// "turn:ceshi.securities.eastmoney.com:7239?transport=udp"
+			//
+		    // ],
+		    "url": "turn:ceshi.securities.eastmoney.com:7239",
 		    "username": "admin",
 		    "credential": "admin"
 		}]
@@ -469,6 +470,7 @@ module.exports = function (env) {
 	    videoOptions: videoOptions,
 	    logger: true
 	},
+	
 	'dev2': {
 	    env: 'dev2',
 	    wsServer: 'wss://www.nodejser.site:443',
