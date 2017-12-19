@@ -452,17 +452,15 @@ module.exports = function (env) {
     var config = {
 	'dev': {
 	    env: 'dev',
-	    //wsServer: 'wss://www.nodejser.site:443',
-	    wsServer: 'wss://ceshi.securities.eastmoney.com:7235',
+	    wsServer: 'wss://www.nodejser.site:443',
+	    //wsServer: 'wss://ceshi.securities.eastmoney.com:7235',
 	    iceServer: {
 		iceServers: [{
-		    url: "stun:ceshi.securities.eastmoney.com:7239"
+		    urls: "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
 		    urls: [
 			"turn:ceshi.securities.eastmoney.com:7239"
-		    ],
-		    username: "admin",
-		    credential: "admin"
+		    ]
 		}]
 	    },
 	    videoOptions: videoOptions,
