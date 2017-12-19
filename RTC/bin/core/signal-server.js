@@ -9,6 +9,7 @@ var Record = require('./record');
 var User = require('./user');
 var Room = require('./room');
 var log = require('./log');
+var config = require('../config');
 
 module.exports = function (sslServer) {
     var wss = new WebSocket.Server({
