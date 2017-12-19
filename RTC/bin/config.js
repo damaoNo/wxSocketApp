@@ -15,6 +15,8 @@ module.exports = {
 
     //是否为双向实时视频
     bothWay: true,
+    //最大房间数：这里最好实测数据作为依据，设置合理的值保证客服端性能
+    maxRooms: 20,
     //保存格式可选 [.mp4, .webm]
     suffix: '.mp4',
     //临时视频文件目录

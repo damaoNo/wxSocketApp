@@ -99,7 +99,7 @@ module.exports = function (sslServer) {
 		    console.log('--------------------------------');
 		    console.log('当前房间数量：', rooms.length);
 		    console.log('--------------------------------');
-		    if(rooms.length > 2){
+		    if(rooms.length > config.maxRooms){
 			sendMessage(newConnector.ws, JSON.stringify({
 			    event: 'full'
 			}));
@@ -112,6 +112,12 @@ module.exports = function (sslServer) {
 			    newRoom: newRoom
 			}));
 			newConnector.roomId = newRoom.id;
+		    }
+		}
+
+		if(json.event === 'flush room'){
+		    if(json.type === 'service'){
+
 		    }
 		}
 
