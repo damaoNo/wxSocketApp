@@ -458,9 +458,9 @@ module.exports = function (env) {
 		iceServers: [{
 		    urls: "stun:ceshi.securities.eastmoney.com:7239"
 		}, {
-		    urls: [
-			"turn:ceshi.securities.eastmoney.com:7239"
-		    ]
+		    urls: "turn:ceshi.securities.eastmoney.com:7239",
+		    username: "admin",
+		    credential: "admin"
 		}]
 	    },
 	    videoOptions: videoOptions,
